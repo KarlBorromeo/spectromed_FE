@@ -34,16 +34,31 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
-    '@nuxtjs/pwa',
+    '@nuxtjs/auth-next',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL: process.env.API_URL,
+  },
+
+  auth: {
+    strategies: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        codeChallengeMethod: '',
+        redirectUri: `${process.env.APP_URL}/auth/callback`,
+        responseType: 'token id_token',
+      },
+    },
+    redirect: {
+      login: '/login', // Page to redirect to for login
+      logout: '/',     // Page to redirect to after logout
+      callback: '/auth/callback', // OAuth callback route
+      home: '/',       // Default home page after login
+    },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
