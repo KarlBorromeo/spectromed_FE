@@ -1,15 +1,10 @@
 <template>
   <v-app>
-    <!-- <v-container fluid class="mt-16 mx-0 col-12 px-0" style=""> -->
-    <v-container fluid class="fill-height ma-0 pa-0">
+    <v-container fluid class="fill-height ma-0 pa-0" id="authLayout">
       <v-main>
         <Nuxt />
       </v-main>
     </v-container>
-    <v-footer app color="primary darken-2" class="white--text">
-      <span>&copy; {{ new Date().getFullYear() }} - SpectroMed</span>
-      <v-spacer />
-    </v-footer>
   </v-app>
 </template>
 
@@ -23,3 +18,10 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+#authLayout{
+  background: rgb(151,71,255);
+  background: linear-gradient(90deg, rgba(151,71,255,1) 35%, rgba(163,95,253,1) 100%);
+}
+</style>
