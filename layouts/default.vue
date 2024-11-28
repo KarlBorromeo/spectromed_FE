@@ -7,17 +7,18 @@
       permanent
       app
       id="drawer"
+      class=" ml-2 rounded-xxl"
     >
       <v-list>
         <v-list-item class="d-flex ma-0 pa-0 align-center white--text flex-grow-0" :class="miniVariant==true?'justify-center':'justify-space-around'">
             <div id="logoContainer" v-if="!miniVariant"/>
             <p class="title ma-0 pa-0" v-if="!miniVariant">Spectromed</p>
             <v-btn v-if="!miniVariant" icon @click.stop="miniVariant = !miniVariant" class="ma-0 pa-0">
-              <v-icon class="white--text">mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
+              <v-icon class="white--text">mdi-page-layout-sidebar-left</v-icon>
             </v-btn>
             
             <v-btn icon v-if="miniVariant" @click.stop="miniVariant = false" class="pa-0 ma-0">
-              <v-icon class="white--text">mdi-apps</v-icon>
+              <v-icon class="white--text">mdi-page-layout-sidebar-left</v-icon>
             </v-btn>
         </v-list-item>
         <v-list-item
@@ -26,7 +27,7 @@
           :to="item.to"
           router
           exact
-          class="white--text"
+          class="white--text subtitle-1"
         >
           <v-list-item-action>
             <v-icon class="white--text">{{ item.icon }}</v-icon>
@@ -38,51 +39,30 @@
       </v-list>
       <template v-slot:append>
         <v-list>
-          <v-list-item>
+          <v-list-item @click="$router.push('/user')">
             <v-list-item-action>
               <v-icon class="white--text">mdi-account</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="white--text">Hi, Karl</v-list-item-title>
             </v-list-item-content>
-          </v-list-item>          
-          <v-list-item>
+          </v-list-item>         
+          <v-list-item @click="onLogout">
             <v-list-item-action>
               <v-icon class="white--text">mdi-logout</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="white--text">Logout</v-list-item-title>
             </v-list-item-content>
-           
           </v-list-item>          
         </v-list>
-
       </template>
     </v-navigation-drawer>
-    <!-- <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      
-      <v-spacer />
-      <v-btn outlined color="error" @click="onLogout()">
-        Logout
-        <v-icon right>mdi-logout</v-icon>
-      </v-btn>
-    </v-app-bar> -->
-    <v-main>
-      <v-container fluid :style="{ padding: 0 }">
-        <v-main style="background-color: #EBE9EF;">
-          <v-container>
-            <Nuxt />
-          </v-container>
-        </v-main>
+    <v-main id="contentMain" class="fill-height">
+      <v-container>
+        <Nuxt />
       </v-container>
     </v-main>
-    <!-- <v-footer app color="primary darken-2" class="white--text">
-      <span>&copy; {{ new Date().getFullYear() }} - SpectroMed</span>
-    </v-footer> -->
     <v-footer app>
       <span>&copy; {{ new Date().getFullYear() }} Iron-Dev ♥</span>
     </v-footer>
@@ -96,7 +76,6 @@ export default {
     if (!$auth.loggedIn) {
       return redirect('/login')
     } 
-
     const rememberExpires = $auth.$storage.getCookie('remember_expires')
     const rememberMaxage = $auth.$storage.getCookie('remember_maxage')
     if (rememberExpires) {
@@ -119,9 +98,9 @@ export default {
           to: '/',
         },
         {
-          icon: 'mdi-file-pdf-box',
-          title: 'Forms',
-          to: '/forms',
+          icon: 'mdi-history',
+          title: 'Report Files',
+          to: '/reports',
         },
       ],
       miniVariant: false,
@@ -138,8 +117,8 @@ export default {
 </script>
 <style scoped>
 #drawer{
-  background-color: #212026;
-
+  background: rgb(63,30,106);
+  background: linear-gradient(0deg, rgba(63,30,106,1) 35%, rgba(95,39,168,1) 100%);
 }
 #logoContainer{
   min-height: 80px;
@@ -151,6 +130,12 @@ export default {
 }
 #logo{
   height: 100%;
+}
+#contentMain{
+  background-image: url('~@/assets/images/dashboardBG.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 </style>

@@ -1,0 +1,16 @@
+<template>
+    <div class="ma-0 pa-0 fill-height d-block" style="background-color: transparent;" outlined>
+        <p class="subtitle-1">Report history</p>
+        <v-divider />
+        <form-dropdown />
+        <reports />
+    </div>
+</template>
+<script>
+import Reports from '~/components/dataTable/reports.vue'
+import formDropdown from '~/components/dropdown/formDropdown.vue'
+export default {
+  components: { formDropdown, Reports },
+    name: 'Forms',
+}
+</script>
