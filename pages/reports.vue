@@ -5,15 +5,15 @@
             <p class="subtitle-1">Report history</p>
             <v-divider />
             <form-dropdown />
-            <reports />
+            <report-table />
         </div>
     </div>
 </template>
 <script>
-import Reports from '~/components/dataTable/reports.vue'
+import reportTable from '~/components/dataTable/reportTable.vue'
 import formDropdown from '~/components/dropdown/formDropdown.vue'
 export default {
-  components: { formDropdown, Reports },
+  components: { formDropdown, reportTable },
     name: 'Forms',
     data(){
         return{

@@ -15,31 +15,31 @@
     >
       <template v-slot:[`item.actions`]="{ item }">
           <div class="d-flex justify-center text-capitalize" style="gap: 10px;">
-              <v-btn class="text-lowercase elevation-0 rounded-xxl">
+              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
                   view
                   <v-icon small class="black--text">
                       mdi-eye
                   </v-icon>          
               </v-btn>
-              <v-btn class="text-lowercase elevation-0 rounded-xxl">
+              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
                   download pdf
                   <v-icon small class="black--text">
                       mdi-download
                   </v-icon>          
               </v-btn>
-              <v-btn class="text-lowercase elevation-0 rounded-xxl">
+              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
                   udpate
                   <v-icon small class="blue--text">
                       mdi-text-box-edit
                   </v-icon>           
               </v-btn>
-              <v-btn class="text-lowercase elevation-0 rounded-xxl">
+              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
                   share
                   <v-icon small class="red--text"> 
                       mdi-share
                   </v-icon>
               </v-btn>
-              <v-btn class="text-lowercase elevation-0 rounded-xxl">
+              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
                   delete
                   <v-icon small class="red--text"> 
                       mdi-delete 
