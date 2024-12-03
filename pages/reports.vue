@@ -3,6 +3,10 @@
         <p v-if="fetching">Lodingggg</p>
         <div v-else>
             <p class="subtitle-1">Report history</p>
+            <!-- TODO -->
+            <v-btn outlined @click="sample">
+                Sample
+            </v-btn>
             <v-divider />
             <form-dropdown />
             <reports />
@@ -23,6 +27,24 @@ export default {
     async mounted(){
         await new Promise(resolve => setTimeout(resolve,2000))
         this.fetching = false
-    }
+    },
+    methods: {
+        // Todo
+        async sample(){
+            if(this.fetching){
+                return   
+            }
+                const {data} = await this.$axios.get(`/api/forms-list/service-report/1`)
+
+                console.log(data);
+            try {
+                this.fetching = true
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.fetching = false
+            }
+        },
+    },
 }
 </script>
