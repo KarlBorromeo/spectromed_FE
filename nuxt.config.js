@@ -36,6 +36,7 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxtjs/dotenv',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -49,8 +50,8 @@ export default {
       googleOauth: {
         scheme: 'oauth2',
         endpoints: {
-          authorization: 'http://localhost:1337/api/connect/google',  // Google OAuth URL in Strapi
-          userInfo: 'http://localhost:1337/api/users/me',            // Endpoint to get user info from Strapi
+          authorization: `${process.env.API_URL}/connect/google`,  // Google OAuth URL in Strapi
+          userInfo:`${process.env.API_URL}/users/me`,            // Endpoint to get user info from Strapi
         },
         token: {
           property: 'jwt',  // The property that holds the JWT in the response
@@ -60,7 +61,7 @@ export default {
           property: false,  // The user data is not nested
         },
         responseType: 'token',  // We expect the token to come in the query params
-        redirectUri: 'http://localhost:3000/google-callback',  // The callback URL after successful login
+        redirectUri: `${process.env.APP_URL}/google-callback`,  // The callback URL after successful login
       },
     },
     redirect: {

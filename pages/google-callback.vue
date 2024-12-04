@@ -16,23 +16,28 @@ export default {
         return;
       }
 
-      // Construct the Strapi callback URL
-      const strapiCallbackUrl = new URL("http://localhost:1337/api/auth/google/callback");
-      Object.keys(queryParams).forEach((key) => {
-        strapiCallbackUrl.searchParams.append(key, queryParams[key]);
-      });
+      // Construct the Strapi callback URL manually
+      let strapiCallbackUrl = `${process.env.API_URL}/auth/google/callback`;
+
+      // Append query parameters
+      const queryString = Object.entries(queryParams)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+
+      if (queryString) {
+        strapiCallbackUrl += `?${queryString}`;
+      }
 
       // Make the request to Strapi
-      const { data } = await this.$axios.get(strapiCallbackUrl.toString());
+      const { data } = await this.$axios.get(strapiCallbackUrl);
       this.$auth.setUser(data.user);
 
-      // Now, set the JWT token that Strapi uses (not the Google id_token)
-      // This assumes the JWT token is returned from Strapi after successful login
-      this.$auth.setUserToken(data.jwt, data.jwt);  // The first `data.jwt` is the name of the property you're setting
-      // The second `data.jwt` is the actual token value
+      // Set the JWT token
+      this.$auth.setUserToken(data.jwt, data.jwt);
 
       // Redirect after successful authentication
       this.$router.push('/');
+
   },
 };
 </script>

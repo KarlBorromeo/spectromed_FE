@@ -34,7 +34,7 @@ export default {
             if(this.fetching){
                 return   
             }
-                const {data} = await this.$axios.get(`/api/forms-list/service-report/1`)
+                const {data} = await this.$axios.get(`/forms-list/service-report/1`)
 
                 console.log(data);
             try {
