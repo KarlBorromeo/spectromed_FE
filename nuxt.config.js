@@ -36,6 +36,7 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxtjs/dotenv',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -46,20 +47,31 @@ export default {
 
   auth: {
     strategies: {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        codeChallengeMethod: '',
-        redirectUri: `${process.env.APP_URL}/auth/callback`,
-        responseType: 'token id_token',
+      googleOauth: {
+        scheme: 'oauth2',
+        endpoints: {
+          authorization: `${process.env.API_URL}/connect/google`,  // Google OAuth URL in Strapi
+          userInfo:`${process.env.API_URL}/users/me`,            // Endpoint to get user info from Strapi
+        },
+        token: {
+          property: 'jwt',  // The property that holds the JWT in the response
+          type: 'Bearer',   // The token type
+        },
+        user: {
+          property: false,  // The user data is not nested
+        },
+        responseType: 'token',  // We expect the token to come in the query params
+        redirectUri: `${process.env.APP_URL}/google-callback`,  // The callback URL after successful login
       },
     },
     redirect: {
-      login: '/login', // Page to redirect to for login
-      logout: '/',     // Page to redirect to after logout
-      callback: '/auth/callback', // OAuth callback route
-      home: '/',       // Default home page after login
+      login: '/login',        // Redirect to login page if user isn't logged in
+      logout: '/login',            // Redirect to homepage after logout
+      callback: '/google-callback',  // The callback route for successful OAuth login
+      home: '/',              // Redirect to homepage after successful login
     },
   },
+  
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

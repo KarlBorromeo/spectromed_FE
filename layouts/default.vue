@@ -73,7 +73,7 @@
 export default {
   name: 'DefaultLayout',
   middleware({ $auth, redirect, state}) {
-    if (!$auth.loggedIn) {
+    if (!$auth.user) {
       return redirect('/login')
     } 
     const rememberExpires = $auth.$storage.getCookie('remember_expires')
@@ -109,7 +109,7 @@ export default {
   methods: {
     onLogout(){
       // Ensure gapi is loaded and the user is signed out
-      this.$auth.logout()
+      this.$auth.logout();
       this.$router.push('/login')
     }
   }

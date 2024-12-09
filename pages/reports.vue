@@ -3,10 +3,21 @@
         <p v-if="fetching">Lodingggg</p>
         <div v-else>
             <p class="subtitle-1">Report history</p>
+            <!-- TODO -->
+            <v-btn outlined @click="sample">
+                Sample
+            </v-btn>
             <v-divider />
             <form-dropdown />
             <report-table />
         </div>
+        <!-- TODO -->
+        <NativePdfViewer
+        title="Service Report"
+        :open="showPDFViewer"
+        :pdf="pdf"
+        :loading="fetching"
+        @toggle="onTogglePdfViewer" />
     </div>
 </template>
 <script>
@@ -18,11 +29,38 @@ export default {
     data(){
         return{
             fetching: true,
+            // TODO
+            showPDFViewer: false,
+            pdf: null,
         }
     },
     async mounted(){
         await new Promise(resolve => setTimeout(resolve,2000))
         this.fetching = false
-    }
+    },
+    methods: {
+        // Todo
+        async sample(){
+            if(this.fetching){
+                return   
+            }
+            try {
+                this.fetching = true
+                this.pdf = '';
+                this.onTogglePdfViewer();
+                const {data} = await this.$axios.get(`/forms-list/service-report/1`)
+                this.pdf = data;
+                // console.log(data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.fetching = false
+            }
+        },
+
+        onTogglePdfViewer() {
+            this.showPDFViewer = !this.showPDFViewer;
+        },
+    },
 }
 </script>

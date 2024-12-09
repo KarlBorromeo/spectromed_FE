@@ -12,9 +12,9 @@
 export default {
     name: 'LoginLayout',
     beforeMount() {
-        if (this.$auth.user) {
+      if (this.$auth.user) {
         this.$router.push('/')
-        }
+      }
     },
 }
 </script>

@@ -78,7 +78,7 @@ export default {
     methods: {
       loginWithGoogle() {
         // Trigger Nuxt Auth Google login
-        this.$auth.loginWith('google');
+        this.$auth.loginWith('googleOauth');
       },
       formLogin(){
         this.$refs.snackbar.snackbar = true;
