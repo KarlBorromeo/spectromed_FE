@@ -11,6 +11,13 @@
             <form-dropdown />
             <reports />
         </div>
+        <!-- TODO -->
+        <NativePdfViewer
+        title="Service Report"
+        :open="showPDFViewer"
+        :pdf="pdf"
+        :loading="fetching"
+        @toggle="onTogglePdfViewer" />
     </div>
 </template>
 <script>
@@ -22,6 +29,9 @@ export default {
     data(){
         return{
             fetching: true,
+            // TODO
+            showPDFViewer: false,
+            pdf: null,
         }
     },
     async mounted(){
@@ -34,16 +44,22 @@ export default {
             if(this.fetching){
                 return   
             }
-                const {data} = await this.$axios.get(`/forms-list/service-report/1`)
-
-                console.log(data);
             try {
                 this.fetching = true
+                this.pdf = '';
+                this.onTogglePdfViewer();
+                const {data} = await this.$axios.get(`/forms-list/service-report/1`)
+                this.pdf = data;
+                // console.log(data);
             } catch (error) {
                 console.log(error);
             } finally {
                 this.fetching = false
             }
+        },
+
+        onTogglePdfViewer() {
+            this.showPDFViewer = !this.showPDFViewer;
         },
     },
 }
