@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="1200" scrollable :fullscreen="isMobile">
+  <v-dialog v-model="dialog" max-width="1000" scrollable >
     <v-card>
       <v-card-title>
         {{ title || 'PDF Viewer' }}

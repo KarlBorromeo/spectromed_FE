@@ -320,7 +320,6 @@ export default {
         ]
       }
     },
-
     methods: {
       incrementPartReplaced(){
         this.partsReplaced.push({
@@ -329,6 +328,17 @@ export default {
           pnsn: '',
           remarks: ''
         })
+      },
+      //TODO: consider the automation
+      getData(){
+        const formdata = {
+          userID: this.$auth.user.id,
+          category: 'service-report',
+          filename: '',
+          formData: {
+            ///
+          }
+        }
       }
     }
 }

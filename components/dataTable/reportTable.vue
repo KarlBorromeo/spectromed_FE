@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="mt-2">
     <v-card-title>
       <v-text-field
         v-model="search"
@@ -7,6 +7,8 @@
         label="Search"
         single-line
         hide-details
+        :loading="isLoading"
+        color="primary darken-2"
       ></v-text-field>
     </v-card-title>
     <v-data-table
@@ -15,7 +17,7 @@
     >
       <template v-slot:[`item.actions`]="{ item }">
           <div class="d-flex justify-center text-capitalize" style="gap: 10px;">
-              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
+              <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="sampleView(item.name)">
                   view
                   <v-icon small class="black--text">
                       mdi-eye
@@ -48,6 +50,13 @@
           </div>
       </template>
     </v-data-table>
+    <NativePdfViewer
+      title="Service Report"
+      :open="showPDFViewer"
+      :pdf="pdf"
+      :loading="fetching"
+      @toggle="onTogglePdfViewer" 
+    />
   </v-card>
 </template>
 
@@ -69,7 +78,8 @@
             value: 'actions',
         }
         ],
-        files: [
+        files: [],
+        aw: [
           {
             name: 'system_type} ${serial_no} ${customer_name} ${MMDDYY}',
           },
@@ -95,6 +105,10 @@
             name: '- ${system_type} ${serial_no} ${customer_name} ${MMDDYY}',
           },
         ],
+        isLoading: false,
+        fetching: false,
+        showPDFViewer: false,
+        pdf: null,
       }
     },
     methods: {
@@ -108,7 +122,38 @@
           }
         });
         return filteredList
-      }
+      },
+      async fetchList(){
+        this.isLoading = true;
+        try{
+          await new Promise(resolve => setTimeout(resolve,2000))
+          this.files = this.aw;
+        }catch(err){
+
+        }
+        this.isLoading = false;
+      },
+      async sampleView(fileName){
+        try {
+            this.fetching = true
+            this.pdf = '';
+            this.onTogglePdfViewer();
+            await new Promise(resolve => setTimeout(resolve,4000))
+            const {data} = await this.$axios.get(`/forms-list/service-report/1`)
+            this.pdf = data;
+            // console.log(data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            this.fetching = false
+        }
+      },
+      onTogglePdfViewer() {
+        this.showPDFViewer = !this.showPDFViewer;
+      },
     },
+    async beforeMount(){
+      await this.fetchList()
+    }
   }
 </script>
