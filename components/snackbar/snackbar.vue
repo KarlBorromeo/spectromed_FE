@@ -8,7 +8,7 @@
       </v-btn> -->
       <v-snackbar
         v-model="snackbar"
-        color="primary darken-1"
+        :color="color?color:'primary darken-1'"
         dark
       >
         {{ text }}
@@ -30,7 +30,7 @@
 
 <script>
 export default {
-    props: ['text'],
+    props: ['text','color'],
     data: () => ({
         snackbar: false,
     }),

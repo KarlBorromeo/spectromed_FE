@@ -64,17 +64,15 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <snackbar ref="snackbar" text="Not yet available, pls. use Gmail service"/>
+    <Snackbar ref="snackbar" text="Not yet available, pls. use Gmail service"/>
   </v-container>
 </template>
 
 <script>
-import Snackbar from '~/components/snackbar/snackbar.vue';
 export default {
     name: 'LoginPage',
     layout: 'login',
     auth: 'guest',
-    components: { Snackbar },
     methods: {
       loginWithGoogle() {
         // Trigger Nuxt Auth Google login
