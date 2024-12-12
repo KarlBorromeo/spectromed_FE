@@ -21,7 +21,9 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+    // { src: '@/plugins/vuex-persist', ssr: false },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -50,8 +52,8 @@ export default {
       googleOauth: {
         scheme: 'oauth2',
         endpoints: {
-          authorization: `${process.env.API_URL}/connect/google`,  // Google OAuth URL in Strapi
-          userInfo:`${process.env.API_URL}/users/me`,            // Endpoint to get user info from Strapi
+          authorization: `${process.env.API_URL}/api/connect/google`,  // Google OAuth URL in Strapi
+          userInfo:`${process.env.API_URL}/api/users/me?populate=*`,            // Endpoint to get user info from Strapi
         },
         token: {
           property: 'jwt',  // The property that holds the JWT in the response

@@ -122,29 +122,29 @@ export default {
       }
     },
     methods: {
-      async fetchUserMe(){
-        try{
-          const response = await this.$store.dispatch('user/fetchUserMe');
-          this.id = response.id;
-          this.username = response.username;
-          this.email = response.email;
-          this.firstname = response.fullname;
-          this.lastname = response.fullname
-          if(response.signature){
-            this.signatureURL = process.env.API_URL_ASSET + response.signature.url
-          }
-        }catch(error){
-          this.snackbarMsg = error;
-          this.snackbarColor = 'red';
-          this.$refs.snackbar.snackbar = true;
-        }
+      fetchUserMe(){
+        // try{
+        //   const response = await this.$store.dispatch('user/fetchUserMe');
+        //   this.id = response.id;
+        //   this.username = response.username;
+        //   this.email = response.email;
+        //   this.firstname = response.fullname;
+        //   this.lastname = response.fullname
+        //   if(response.signature){
+        //     this.signatureURL = process.env.API_URL_ASSET + response.signature.url
+        //   }
+        // }catch(error){
+        //   this.snackbarMsg = error;
+        //   this.snackbarColor = 'red';
+        //   this.$refs.snackbar.snackbar = true;
+        // }
       },
       async updateUserMe(){
         
       }
     },
     async beforeMount(){
-      await this.fetchUserMe()
+      // await this.fetchUserMe()
     }
 }
 </script>

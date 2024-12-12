@@ -1,26 +1,66 @@
 export const state = () => ({
-  })
+    userData: null,
+    holdOfflineImageData: null
+})
   
   export const getters = {
+    fetchUserData(state){
+        return state.userData
+    },
+
+    fetchOfflineImage(state){
+        return state.holdOfflineImageData
+    },
   }
   
   export const mutations = {
+    resetUser(state) {
+        state.userData = null
+        state.holdOfflineImageData = null
+    },
+
+    setUser(state, value) {
+        state.userData = value
+    },
+
+    setOfflineImage(state,value){
+        state.holdOfflineImageData = value
+    },
+
+    resetAllImage(state){
+        state.holdOfflineImageData = null
+        state.userData.signature = null
+    },
+
+    changeUserData(state,data){
+        state.userData.signature = data.signature
+        state.userData.firstName = data.firstName
+        state.userData.lastName = data.lastName
+        state.userData.employeeId = data.employeeId
+    }
   }
   
   export const actions = {
-    async fetchUserMe(){
-        try{
-            const params = {
-                populate: '*'
-            }
-            const response = await this.$axios.get(`/users/me`,{
-                params
-            })
-            return response.data
-        }catch(error){
-           throw error
-        }
+    async copyUser({ commit }, data){
+        commit('setUser', data)
     },
+
+    removeUser({ commit }){
+        commit('resetUser')
+    },
+
+    saveImage({ commit }, data){
+        commit('setOfflineImage', data)
+    },
+
+    resetImage({ commit }){
+        commit('resetAllImage')
+    },
+
+    updateUser({ commit }, data){
+        commit('changeUserData', data)
+    },
+    
     updateUserMe(_,payload){
         console.log(payload)
     }

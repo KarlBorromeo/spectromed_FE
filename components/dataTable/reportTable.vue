@@ -139,7 +139,7 @@
             this.pdf = '';
             this.onTogglePdfViewer();
             await new Promise(resolve => setTimeout(resolve,4000))
-            const {data} = await this.$axios.get(`/forms-list/service-report/1`)
+            const {data} = await this.$axios.get(`/api/forms-list/service-report/1`)
             this.pdf = data;
             // console.log(data);
         } catch (error) {

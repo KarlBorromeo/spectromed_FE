@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'DefaultLayout',
   middleware({ $auth, redirect, state}) {
@@ -107,9 +108,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', ['removeUser',]),
     onLogout(){
       // Ensure gapi is loaded and the user is signed out
       this.$auth.logout();
+      this.removeUser()
       this.$router.push('/login')
     }
   }
