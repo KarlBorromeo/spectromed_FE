@@ -44,7 +44,7 @@
               <v-icon class="white--text">mdi-account</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title class="white--text">Hi, Karl</v-list-item-title>
+              <v-list-item-title class="white--text">My Account</v-list-item-title>
             </v-list-item-content>
           </v-list-item>         
           <v-list-item @click="onLogout">
@@ -93,11 +93,11 @@ export default {
       drawer: false,
       fixed: false,
       items: [
-        {
-          icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
-          to: '/',
-        },
+        // {
+        //   icon: 'mdi-view-dashboard',
+        //   title: 'Dashboard',
+        //   to: '/',
+        // },
         {
           icon: 'mdi-history',
           title: 'Report Files',

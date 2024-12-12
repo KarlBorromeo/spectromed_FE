@@ -10,7 +10,7 @@
                 <h4 v-if="isLoading" class="white--text">
                     Please wait...
                 </h4>
-                <h4 v-else class="white--text">
+                <h4 v-else class="white--text title my-0 py-0">
                     Edit Data
                 </h4>
                 <v-spacer />
@@ -92,14 +92,15 @@
                                     <!-- Remove Button -->
                                     <v-col col="12" class="text-center ma-0 pa-0">
                                         <v-btn
-                                        class="mt-5"
+                                        class="mt-3 red--text elevation-1"
                                         :loading="isLoading"
                                         :disabled="isLoading"
                                         depressed
-                                        color="error"
+                                        color="white lighten-2"
+                                        small
                                         @click="imageDelete">
                                             Remove
-                                            <v-icon>mdi-delete</v-icon>
+                                            <v-icon small class="red--text">mdi-delete</v-icon>
                                         </v-btn>
                                     </v-col>
                                 </v-row>
@@ -111,10 +112,10 @@
             <v-divider />
             <v-card-actions>
                 <v-spacer />
-                <v-btn :disabled="isLoading" class="error" @click="close">
+                <v-btn :disabled="isLoading" class="error" @click="close" small>
                     Cancel
                 </v-btn>
-                <v-btn :disabled="isLoading" class="primary" @click="onSubmit()">
+                <v-btn :disabled="isLoading" class="primary" @click="onSubmit()" small>
                     Submit
                 </v-btn>
             </v-card-actions>

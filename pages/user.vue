@@ -1,154 +1,101 @@
 <template>
-  <v-container>
-    <p class="title">User module here</p>
-    <v-divider />
-    <v-row justify="center" class="mt-5">
-      <v-col cols="0" md="3" class="d-none d-md-block">
+  <v-row no-gutters>
+      <v-col cols="12">
+          <v-container class="mt-2">
+            <h3 class="title">My Profile</h3>
+            <v-divider />
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <strong class="subtitle-2">First Name:</strong> 
+                        {{userData ? userData.firstName : ''}}
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <strong class="subtitle-2">Last Name:</strong>
+                        {{userData ? userData.lastName : ''}}
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <strong class="subtitle-2">Employee ID:</strong>
+                        {{userData ? userData.employeeId : ''}}
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <strong class="subtitle-2">Email:</strong>
+                         {{userData ? userData.email : ''}}
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-progress-circular
+                            v-if="isLoading"
+                            indeterminate
+                            color="primary" />
+                        <v-sheet v-else class="ma-0 pa-0" color="transparent">
+                        <v-sheet v-if="userData.signature" class="ma-0 pa-0" color="transparent" outlined>
+                            <v-card class="d-flex flex-wrap justify-start align-start elevation-0" color="transparent">
+                              <strong class="subtitle-2 mr-3">Signature:</strong>
+                              <v-img
+                                lazy-src="https://picsum.photos/id/11/10/6"
+                                max-height="200"
+                                max-width="300"
+                                :src="`${
+                                    userData.signature 
+                                        ? $axios.defaults.baseURL + userData.signature.url
+                                        : null
+                                }`"
+                              ></v-img>            
+                            </v-card>
+       
+                        </v-sheet>
+                        <v-sheet v-else class="ma-0 pa-0" color="transparent">
+                            Signature : None
+                        </v-sheet> 
+                        </v-sheet>
+                    </v-col>
+                    <v-col cols="12" class="text-right">
+                        <v-btn 
+                            class="primary lighten-1" 
+                            :disabled="isLoading" 
+                            :loading="isLoading"
+                            @click="toggleEditData"
+                            small
+                            >
+                            Edit
+                            <v-icon small >mdi-pencil</v-icon>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>           
+          </v-container>
+          
       </v-col>
-      <v-col cols="10" md="6">
-        <v-textarea
-          rows="1"
-          auto-grow
-          label="Username"
-          readonly
-          v-model="username"
-        />
-        <v-textarea
-          rows="1"
-          auto-grow
-          label="Firstname"
-          readonly
-          v-model="firstname"
-        />
-        <v-textarea
-          rows="1"
-          auto-grow
-          label="Lastname"
-          readonly
-          v-model="lastname"
-        />
-        <v-textarea
-          rows="1"
-          auto-grow
-          label="Email"
-          readonly
-          v-model="email"
-        />
-        <div class="d-flex flex-wrap justify-start align-end">
-          <v-img
-            lazy-src="https://picsum.photos/id/11/10/6"
-            max-height="150"
-            max-width="250"
-            :src="signatureURL"
-            v-if="signatureURL" 
-            class="mr-2"
-          />
-          <v-btn x-small class="elevation-1" @click.stop="dialog = true">{{buttonSignatureText}}</v-btn>
-          <v-dialog
-            v-model="dialog"
-            width="500"
-          >
-            <v-card>
-              <v-card-title class="text-h5 grey lighten-2">
-                Upload
-              </v-card-title>
 
-              <v-card-text>
-                <p class="mt-2">
-                  The uploaded signature will be used for the entire documents generated. You can't proceed for document generation if no uploaded signature.
-                </p>
-                <v-divider />
-                <v-file-input
-                  accept="image/png, image/jpeg, image/bmp"
-                  placeholder="Choose a signature"
-                  prepend-icon="mdi-camera"
-                  label="Signature"
-                />
-              </v-card-text>
-              
-              <v-card-actions>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
-        <!-- <v-file-input
-          v-else
-          :rules="rules"
-          accept="image/png, image/jpeg, image/bmp"
-          placeholder="Upload Signature"
-          prepend-icon="mdi-camera"
-          label="Upload Signature"
-          v-model="signature"
-        /> -->
-      </v-col>
-      <v-col cols="0" md="3" class="d-none d-md-block">
-      </v-col>
-      <v-col cols="12" class="d-flex justify-end">
-        <v-btn color="success darken-1">Edit</v-btn>
-        <v-btn color="primary lighten-1" class="ml-2">Save</v-btn>
-      </v-col>
-    </v-row>
-    <Snackbar ref="snackbar" :text="snackbarMsg" :color="snackbarColor"/>
-    
-  </v-container>
+      <EditData
+      :open="isEditDataOpen"
+      @close="toggleEditData"/>
+  </v-row>
 </template>
-
 <script>
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
-    name: 'User',
-    data(){
-      return{
-        id: '',
-        username: '',
-        firstname: '',
-        lastname: '',
-        email: '',
-        signature: null,
-        signatureURL: null,
+  name: 'Profile',
+  data: () => ({
+      isLoading: false,
+      isEditDataOpen: false,
+  }),
 
-        snackbarMsg: '',
-        snackbarColor: null,
-        dialog: false,
+  created() {
+      this.copyUser(this.$auth.user)
+  },
+  
+  computed:{
+      ...mapState('user', ['userData']),
+      // ...mapGetters('user', ['fetchUserData']),
+  },
 
-      }
-    },
-    computed:{
-      buttonSignatureText(){
-        if(this.signatureURL){
-          return 'Change Signature';
-        }else{
-          return 'Upload Signature'
-        }
-      }
-    },
-    methods: {
-      fetchUserMe(){
-        // try{
-        //   const response = await this.$store.dispatch('user/fetchUserMe');
-        //   this.id = response.id;
-        //   this.username = response.username;
-        //   this.email = response.email;
-        //   this.firstname = response.fullname;
-        //   this.lastname = response.fullname
-        //   if(response.signature){
-        //     this.signatureURL = process.env.API_URL_ASSET + response.signature.url
-        //   }
-        // }catch(error){
-        //   this.snackbarMsg = error;
-        //   this.snackbarColor = 'red';
-        //   this.$refs.snackbar.snackbar = true;
-        // }
+  methods:{
+      ...mapActions('user', ['copyUser',]),
+
+      toggleEditData(){
+          this.isEditDataOpen = !this.isEditDataOpen
       },
-      async updateUserMe(){
-        
-      }
-    },
-    async beforeMount(){
-      // await this.fetchUserMe()
-    }
+  }
 }
 </script>
-
-<style>
-
-</style>

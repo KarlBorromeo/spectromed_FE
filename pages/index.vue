@@ -6,7 +6,7 @@
 export default {
   name: 'IndexPage',
   middleware({ redirect }) {
-    return redirect('/profile')
+    return redirect('/serviceReport')
   },
 }
 </script>
