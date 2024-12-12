@@ -194,7 +194,7 @@ export default {
 
             const imageFile = e.target.files[0]
 
-            console.log(imageFile);
+
             // Checks if the image uploaded is really an image
             if(imageFile.type.split('/')[0] !== 'image'){
                 // PUT THE SNACKBAR ERROR HERE
