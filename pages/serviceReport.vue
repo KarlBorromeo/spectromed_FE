@@ -18,14 +18,18 @@
       <v-container class="ma-4">
         <v-row justify="start" align="start">
           <v-col cols="4" md="2">
-            <v-text-field 
+            <!-- DATE -->
+            <v-text-field
+            v-model="formData.date"
               class="marginPaddingY0"
               type="date"
               label="Date"
               filled
               dense
             />
-            <v-text-field 
+            <!-- SR No. -->
+            <v-text-field
+              v-model="formData.srNumber"
               class="marginPaddingY0"
               type="text"
               label="S.R No.:"
@@ -41,32 +45,53 @@
             <p class="subtitle-2">Account</p>
           </v-col>
           <v-col cols="8" class="marginPaddingY0">
-            <v-text-field 
+            <!-- CUSTOMER NAME -->
+            <v-text-field
+              v-model="formData.customerName"
               filled
+              counter
+              maxlength="30"
               class="marginPaddingY0"
               type="text"
               label="Customer Name"
             />
-            <v-text-field 
+            <!-- BUSINESS NAME -->
+            <v-text-field
+              v-model="formData.businessName"
               filled
+              counter
+              maxlength="50"
               class="marginPaddingY0"
               type="text"
               label="Business Name"
             />
-            <v-text-field 
+            <!-- ADDRESS -->
+            <v-text-field
+              v-model="formData.address"
+              counter
+              maxlength="100"
               filled
               class="marginPaddingY0"
               type="text"
               label="Address"
             />
-            <v-text-field 
+            <!-- Mobile Number -->
+            <v-text-field
+              v-model="formData.mobileNumber"
+              counter
+              maxlength="10"
               filled
               class="marginPaddingY0"
               type="text"
+              hide-spin-buttons
               label="Mobile Number"
               prefix="+63"
             />
-            <v-text-field 
+            <!-- Telephone Number -->
+            <v-text-field
+              v-model="formData.telephoneNumber"
+              counter
+              maxlength="30"
               filled
               class="marginPaddingY0"
               type="text"
@@ -81,26 +106,39 @@
             <p class="subtitle-2">Service</p>
           </v-col>
           <v-col cols="8" class="marginPaddingY0">
-            <v-text-field 
+            <!-- SYSTEM TYPE -->
+            <v-text-field
+              v-model="formData.systemType"
+              counter
+              maxlength="100"
               filled
               class="marginPaddingY0"
               type="text"
               label="System Type"
             />
-            <v-text-field 
+            <!-- SERIAL NUMBER -->
+            <v-text-field
+              v-model="formData.serialNumber"
+              counter
+              maxlength="100"
               filled
               class="marginPaddingY0"
               type="text"
               label="Serial Number"
             />
-            <v-radio-group class="marginPaddingY0" label="Service Type">
+            <!-- SERVICE TYPE -->
+            <v-radio-group v-model="formData.serviceType" class="marginPaddingY0" label="Service Type">
               <v-radio
                 v-for="(type,i) in serviceTypeItems"
-                :key="i"
+                :key="type"
                 :label="type"
                 :value="type"
               />
-              <v-text-field 
+              <v-text-field
+                v-model="holdOtherstext"
+                v-if="formData.serviceType === 'Others'"
+                counter
+                maxlength="10"
                 filled
                 class="marginPaddingY0"
                 type="text"
@@ -114,39 +152,57 @@
           </v-col>
           <v-col cols="2" class="marginPaddingY0" />
           <v-col cols="8" class="marginPaddingY0">
+            <!-- REASON FOR SERVICE -->
             <v-textarea
+              v-model="formData.reason"
               label="Reason for Service"
+              counter
+              maxlength="180"
               auto-grow
               rows="2"
               filled
             />
+            <!-- Service Rendered -->
             <v-textarea
+              v-model="formData.serviceRendered"
+              counter
+              maxlength="900"
               label="Service Rendered"
               auto-grow
               filled
               rows="4"
             />
+            <!-- RECOMMENDATIONS -->
             <v-textarea
+              v-model="formData.recommendation"
+              counter
+              maxlength="180"
               label="Recommendation"
               auto-grow
               filled
               rows="2"
             />
-            <v-radio-group class="marginPaddingY0">
+            <!-- STATUS CHOICE -->
+            <v-radio-group v-model="formData.recommendChoice" class="marginPaddingY0">
               <v-radio
                 v-for="(type,i) in statusItems"
-                :key="i"
+                :key="type"
                 :label="type"
                 :value="type"
               />
-              <v-text-field 
+              <v-text-field
+                v-model="holdRecommendOtherstext"
+                v-if="formData.recommendChoice === 'Others'"
                 filled
+                counter
+                maxlength="15"
                 class="marginPaddingY0"
                 type="text"
                 label="Others"
               />
             </v-radio-group>
           </v-col>
+          <!-- Parts Replaced Add row -->
           <v-col cols="12" class="marginPaddingY0">
             <section class=" mb-2 d-flex justify-space-between">
               <p class="subtitle-1 marginPaddingY0">Parts Replaced</p>
@@ -156,6 +212,7 @@
             </section>
             <v-divider />
           </v-col>
+          <!-- Parts Replaced Header and Data -->
           <v-col cols="2" class="marginPaddingY0" />
           <v-col cols="12" md="8" class="marginPaddingY0">
             <v-simple-table
@@ -180,19 +237,24 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="item in partsReplaced"
-                    :key="item.name"
+                    v-for="(item,i) in formData.partsReplaced"
+                    :key="i"
                   >
                     <td class="cellBorderBottom py-1" style="border-left: 1px solid #4B6472!important; border-right: 1px solid #4B6472!important">
-                      <v-text-field 
+                      <v-text-field
+                        v-model="item.quantity"
                         filled
                         class="marginPaddingY0"
                         type="number"
+                        hide-spin-buttons
                         dense
                       />
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
                       <v-textarea
+                        v-model="item.partItem"
+                        counter
+                        maxlength="20"  
                         auto-grow
                         filled
                         rows="1"
@@ -201,6 +263,9 @@
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
                       <v-textarea
+                        v-model="item.pnsn"
+                        counter
+                        maxlength="25"
                         auto-grow
                         filled
                         rows="1"
@@ -209,6 +274,9 @@
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
                       <v-textarea
+                        v-model="item.remarks"
+                        counter
+                        maxlength="40"
                         auto-grow
                         filled
                         rows="1"
@@ -221,19 +289,26 @@
             </v-simple-table>
           </v-col>
           <v-col cols="12" />
+          <!-- TIME data -->
           <v-col cols="4" md="2">
             <section class="d-flex flex-wrap">
+              <!-- TRAVEL TIME -->
               <v-text-field
+                v-model="formData.travelTime"
                 class="marginPaddingY0 mx-4"
                 label="Travel Time"
                 type="time"
-              />              
+              />
+              <!-- ARRIVAL TIME -->
               <v-text-field
+                v-model="formData.arrivalTime"
                 class="marginPaddingY0 mx-4"
                 label="Arrival Time"
                 type="time"
-              />              
+              />
+              <!-- DEPARTURE TIME -->
               <v-text-field
+                v-model="formData.departureTime"
                 class="marginPaddingY0 mx-4"
                 label="Departure Time"
                 type="time"
@@ -249,6 +324,7 @@
             <p class="subtitle-1 text-center">Working Time</p>
             <section class="d-flex flex-wrap">
               <v-text-field
+                v-model="formData.startTime"
                 class="marginPaddingY0 mx-4"
                 label="Start Time"
                 type="time"
@@ -256,6 +332,7 @@
                 filled
               />              
               <v-text-field
+                v-model="formData.endTime"
                 class="marginPaddingY0 mx-4"
                 label="End Time"
                 type="time"
@@ -266,7 +343,8 @@
             <h3 class="mt-4 text-uppercase text-center">Acknowledgement</h3>
             <p class="text-center caption">We confirm that the above spare parts have been replaced / machine has been repaired to our satisfaction
               Spare parts ordered were received in good physical condition</p>
-            <v-text-field 
+            <v-text-field
+              v-model="formData.ackDate" 
               class=""
               type="date"
               label="Date"
@@ -279,7 +357,7 @@
           <v-col cols="10" class="mt-4">
             <h2 class="text-center">"Service You Can Trust"</h2>
             <section class="d-flex justify-center">
-              <v-btn class="white--text btnBG caption">Submit</v-btn>
+              <v-btn class="white--text btnBG caption" @click="onSubmit">Submit</v-btn>
             </section>
           </v-col>
         </v-row>    
@@ -290,7 +368,7 @@
 
 <script>
 export default {
-    name: 'Form',
+    name: 'ServiceReport',
     layout: 'form',
 
     data(){
@@ -310,35 +388,59 @@ export default {
           'Needs Recall',
           'Others'
         ],
-        partsReplaced: [
-          {
-            quantity: 0,
-            partItem: 'fdas',
-            pnsn: 'pnsns',
-            remarks: 'haha'
-          }
-        ]
+        holdOtherstext: '',
+        holdRecommendOtherstext: '',
+        formData: {
+          date: null,
+          srNumber: '',
+          customerName: '',
+          businessName: '',
+          address: '',
+          mobileNumber: '',
+          telephoneNumber: '',
+          // 
+          systemType: '',
+          serialNumber: '',
+          serviceType: null,
+          // 
+          reason: '',
+          serviceRendered: '',
+          recommendation: '',
+          recommendChoice: null,
+          // 
+          partsReplaced: [
+            {
+              quantity: null,
+              partItem: '',
+              pnsn: '',
+              remarks: ''
+            }
+          ],
+          travelTime: null,
+          arrivalTime: null,
+          departureTime: null,
+          // 
+          startTime: null,
+          endTime: null,
+          // 
+          ackDate: null,
+        }
       }
     },
     methods: {
       incrementPartReplaced(){
-        this.partsReplaced.push({
-          quantity: 0,
-          partItem: '',
-          pnsn: '',
-          remarks: ''
-        })
+        this.formData.partsReplaced.push(
+          {
+            quantity: null,
+            partItem: '',
+            pnsn: '',
+            remarks: ''
+          }
+        )
       },
       //TODO: consider the automation
-      getData(){
-        const formdata = {
-          userID: this.$auth.user.id,
-          category: 'service-report',
-          filename: '',
-          formData: {
-            ///
-          }
-        }
+      onSubmit(){
+        console.log(this.formData);
       }
     }
 }
