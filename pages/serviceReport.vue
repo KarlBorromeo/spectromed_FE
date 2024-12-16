@@ -139,7 +139,7 @@
             <v-radio-group v-model="formData.serviceType" class="marginPaddingY0" label="Service Type">
               <v-radio
                 v-for="(type,i) in serviceTypeItems"
-                :key="type"
+                :key="i"
                 :label="type"
                 :value="type"
               />
@@ -199,7 +199,7 @@
             <v-radio-group v-model="formData.recommendChoice" class="marginPaddingY0">
               <v-radio
                 v-for="(type,i) in statusItems"
-                :key="type"
+                :key="i"
                 :label="type"
                 :value="type"
               />
@@ -246,6 +246,9 @@
                     </th>
                     <th class="text-center table-header white--text subtitle-2">
                       Remarks
+                    </th>
+                    <th class="text-center table-header white--text subtitle-2">
+                      Action
                     </th>
                   </tr>
                 </thead>
@@ -301,6 +304,11 @@
                         :disabled="isLoading"
                       />
                     </td>
+                    <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
+                      <v-btn icon @click="removePartsReplaced(i)">
+                        <v-icon class="red--text">mdi-close</v-icon>
+                      </v-btn>
+                    </td>
                   </tr>
                 </tbody>
               </template>
@@ -342,6 +350,7 @@
         </v-row>    
         <v-row justify="center" class="">
           <v-col cols="12" sm="8" md="6"  lg="5" xl="4" class="marginPaddingY0">
+            <!-- WORKING TIME START AND END -->
             <p class="subtitle-1 text-center">Working Time</p>
             <section class="d-flex flex-wrap">
               <v-text-field
@@ -374,9 +383,23 @@
               filled
               :disabled="isLoading"
             />
-            <v-card class="elevation-3" height="150">
-            </v-card>
-            <p class="text-center overline marginPaddingY0">Customer Name & Signature</p>
+            <!-- CUSTOMER NAME AND SIGNATURE -->
+            <p class="text-center overline marginPaddingY0">Customer Name & Signature</p>   
+            <div class="d-flex justify-center align-center flex-column mb-2">
+              <v-card height="200" width="400">
+                <img :src="formData.customerSignatureImg" >
+              </v-card>
+            </div>
+            <v-text-field
+              v-model="formData.customerSigName"
+              class=""
+              type="text"
+              label="Name"
+              readonly
+            />
+            <section class="d-flex flex-wrap justify-center">
+              <SignaturePad ref="signaturePad" @save="saveSignatureName"/>              
+            </section>
           </v-col>
           <v-col cols="10" class="mt-4">
             <h2 class="text-center">"Service You Can Trust"</h2>
@@ -397,8 +420,10 @@
 </template>
 
 <script>
+import Signature from '@lemonadejs/signature/dist/vue';
 export default {
     name: 'ServiceReport',
+    components: { Signature },
     layout: 'form',
 
     data(){
@@ -455,11 +480,17 @@ export default {
           endTime: null,
           // 
           ackDate: null,
-        }
+          customerSigName: null,
+          customerSignatureImg: null,
+        },
       }
     },
     methods: {
+      // increment the parts replaced array
       incrementPartReplaced(){
+        if(this.formData.partsReplaced.length>=5){
+          return;
+        }
         this.formData.partsReplaced.push(
           {
             quantity: null,
@@ -468,6 +499,16 @@ export default {
             remarks: ''
           }
         )
+      },
+      // remove an index in parts replaced array 
+      removePartsReplaced(index){
+        this.formData.partsReplaced.splice(index,1)
+      },
+      // save the emited values in the dialog, it passed the signature img and the name
+      saveSignatureName(obj){
+        console.log(obj)
+        this.formData.customerSignatureImg  =  obj.signature
+        this.formData.customerSigName = obj.name
       },
       //TODO: consider the automation
       async onSubmit(){
