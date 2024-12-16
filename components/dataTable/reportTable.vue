@@ -1,153 +1,278 @@
 <template>
   <v-card class="mt-2">
-    <v-card-title>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-        :loading="isLoading"
-        color="primary darken-2"
-      ></v-text-field>
-    </v-card-title>
-    <v-data-table
+    <v-card-text>
+      <!-- SEARCH AND REFRESH BUTTON -->
+      <v-sheet class="mb-2 d-flex flex-wrap align-center justify-center">
+          <!-- Search Field -->
+          <v-text-field
+          v-model="search"
+          label="Search"
+          outlined
+          dense
+          clearable
+          :disabled="isLoading"
+          hide-details
+          class="flex-grow-1 mt-1"
+          prepend-inner-icon="mdi-magnify"
+          @keydown.enter="fetchList" />
+          <!-- REFRESH Button -->
+          <v-btn
+          color="primary"
+          outlined
+          height="40"
+          class="ml-2 mt-1"
+          @click="fetchList">
+              <v-icon>
+                  mdi-refresh
+              </v-icon>
+          </v-btn>
+      </v-sheet>
+      <v-divider />
+      <!-- DATA TABLE -->
+      <v-data-table
       :headers="headers"
-      :items="filtered(search)"
-    >
-      <template v-slot:[`item.actions`]="{ item }">
-          <div class="d-flex justify-center text-capitalize" style="gap: 10px;">
-              <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="sampleView(item.name)">
-                  view
-                  <v-icon small class="black--text">
-                      mdi-eye
-                  </v-icon>          
-              </v-btn>
-              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
-                  download pdf
-                  <v-icon small class="black--text">
-                      mdi-download
-                  </v-icon>          
-              </v-btn>
-              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
-                  udpate
-                  <v-icon small class="blue--text">
-                      mdi-text-box-edit
-                  </v-icon>           
-              </v-btn>
-              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
-                  share
-                  <v-icon small class="red--text"> 
-                      mdi-share
-                  </v-icon>
-              </v-btn>
-              <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
-                  delete
-                  <v-icon small class="red--text"> 
-                      mdi-delete 
-                  </v-icon>
-              </v-btn>
-          </div>
-      </template>
-    </v-data-table>
+      :loading="isLoading"
+      :items="files"
+      hide-default-footer
+      disable-sort
+      disable-pagination
+      >
+        <template v-slot:[`item.actions`]="{ item }">
+            <div class="d-flex justify-center text-capitalize" style="gap: 10px;">
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="sampleView(item)">
+                    view
+                    <v-icon small class="black--text">
+                        mdi-eye
+                    </v-icon>          
+                </v-btn>
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="onDownload(item)">
+                    download pdf
+                    <v-icon small class="black--text">
+                        mdi-download
+                    </v-icon>          
+                </v-btn>
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
+                    udpate
+                    <v-icon small class="blue--text">
+                        mdi-text-box-edit
+                    </v-icon>           
+                </v-btn>
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
+                    share
+                    <v-icon small class="red--text"> 
+                        mdi-share
+                    </v-icon>
+                </v-btn>
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="onToggleDelete(item)">
+                    delete
+                    <v-icon small class="red--text"> 
+                        mdi-delete 
+                    </v-icon>
+                </v-btn>
+            </div>
+        </template>
+      </v-data-table>
+      <v-divider />
+      <!-- Pagination -->
+      <v-sheet class="d-flex flex-wrap align-center pt-3 pl-sm-4 grey--text">
+          <v-sheet class="flex-grow-1">
+              Total: {{ totalRecords.toLocaleString() }}
+          </v-sheet>
+          <v-sheet class="d-flex align-center" width="80" style="margin-right: 16px;">
+              <v-select
+                  v-model="pagination.limit"
+                  color="primary"
+                  outlined
+                  :disabled="isLoading"
+                  dense
+                  hide-details
+                  :items="[10, 15, 20]"/>
+          </v-sheet>
+          <v-sheet class="d-none d-sm-flex align-center">
+              <v-pagination
+                  v-model="pagination.page"
+                  :disabled="isLoading"
+                  :length="pageTotal"
+                  :total-visible="isMobile ? 4 : 6"/>
+          </v-sheet>
+          <v-sheet class="w-100 d-flex justify-center d-sm-none mt-2">
+              <v-pagination
+                  v-model="pagination.page"
+                  :disabled="isLoading"
+                  :length="pageTotal"
+                  :total-visible="isMobile ? 4 : 6"/>
+          </v-sheet>
+      </v-sheet>
+    </v-card-text>
+    
     <NativePdfViewer
       title="Service Report"
       :open="showPDFViewer"
       :pdf="pdf"
-      :loading="fetching"
+      :loading="isLoading"
       @toggle="onTogglePdfViewer" 
     />
+
+    <YesNoDialog
+      title="Confirm"
+      :width="420"
+      :open="isDeleteOpen"
+      :loading="isLoading"
+      @yes="deleteForm"
+      @no="onToggleDelete(null)">
+      <template #default>
+          <v-alert class="mb-0" outlined type="error">
+          Do you want to delete Filename: <b>{{holdSelectedData ? holdSelectedData.filename : ''}}</b>?
+          </v-alert>
+      </template>
+    </YesNoDialog>
   </v-card>
 </template>
 
 <script>
+import globalMixin from '@/mixins/global';
   export default {
+    mixins: [globalMixin],
     data () {
       return {
         search: '',
         headers: [
           {
             text: 'File Name',
-            align: 'start',
-            filterable: false,
-            value: 'name',
+            align: 'center', 
+            value: 'filename',
           },
           { 
             text: 'Actions', 
             align: 'center', 
             value: 'actions',
-        }
+          }
         ],
+        pagination: {
+          page: 1,
+          limit: 10,
+        },
+        totalRecords: 0,
         files: [],
-        aw: [
-          {
-            name: 'system_type} ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-          {
-            name: 'ksystem_type} ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-          {
-            name: 'okay ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-          {
-            name: '- ${system_type} ${serial_no} borromeo ${MMDDYY}',
-          },
-          {
-            name: '- ${system_type} ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-          {
-            name: '- ${system_type} ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-          {
-            name: '- ${system_type} ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-          {
-            name: '- ${system_type} ${serial_no} ${customer_name} ${MMDDYY}',
-          },
-        ],
         isLoading: false,
-        fetching: false,
         showPDFViewer: false,
         pdf: null,
+        holdSelectedData: null,
+        isDeleteOpen:false,
       }
     },
-    methods: {
-      filtered(searchVal){
-        if(!searchVal){
-          return this.files
-        }
-        const filteredList = this.files.filter((item) => {
-          if(item.name.toLowerCase().startsWith(searchVal.toLowerCase())){
-            return item
-          }
-        });
-        return filteredList
-      },
-      async fetchList(){
-        this.isLoading = true;
-        try{
-          await new Promise(resolve => setTimeout(resolve,2000))
-          this.files = this.aw;
-        }catch(err){
 
-        }
-        this.isLoading = false;
+    computed: {
+      pageTotal() {
+        return Math.ceil(this.totalRecords / this.pagination.limit);
       },
-      async sampleView(fileName){
+    },
+
+    watch:{
+        pagination: {
+            handler() {
+                this.fetchList();
+            },
+            deep: true,
+        },
+    },
+
+    methods: {
+      async fetchList(){
+        if(this.isLoading){
+          return
+        }
+
         try {
-            this.fetching = true
+          this.isLoading = true
+          const search = this.search || '';
+          const limit = this.pagination.limit;
+          const offset =
+            this.pagination.page === 1
+              ? 0
+              : this.pagination.limit * this.pagination.page -
+                this.pagination.limit;
+          
+          const { data } = await this.$axios.get(`/api/forms-list/user/forms/${this.$auth.user.id}?search=${search}&limit=${limit}&offset=${offset}`)
+          
+          this.files = data?.data || []
+          this.totalRecords = data?.total || 0
+        } catch (error) {
+          
+        } finally {
+          this.isLoading = false
+        }
+      },
+      async sampleView(item){
+        if(this.isLoading){
+          return
+        }
+
+        try {
+            this.isLoading = true
             this.pdf = '';
             this.onTogglePdfViewer();
-            await new Promise(resolve => setTimeout(resolve,4000))
-            const {data} = await this.$axios.get(`/api/forms-list/service-report/1`)
+            const {data} = await this.$axios.get(`/api/forms-list/${item.category}/${item.id}`)
             this.pdf = data;
             // console.log(data);
         } catch (error) {
             console.log(error);
         } finally {
-            this.fetching = false
+            this.isLoading = false
         }
       },
+
+      async onDownload(item){
+        if(this.isLoading){
+          return
+        }
+
+        try {
+            this.isLoading = true
+            
+            const {data} = await this.$axios.get(`/api/forms-list/${item.category}/${item.id}`)
+            const downloadLink = document.createElement('a');
+            // Todo after data
+            // this.pdf = data;
+            downloadLink.href = data;
+            downloadLink.download = `${item.filename}`
+            downloadLink.click()
+        } catch (error) {
+            console.log(error);
+        } finally {
+            this.isLoading = false
+        }
+      },
+
+      async deleteForm(){
+        if(this.isLoading){
+          return
+        }
+
+        try {
+          this.isLoading = true
+          const { data } = await this.$axios.delete(`/api/forms-lists/${this.holdSelectedData.id}`)
+
+          if(data){
+            // SNACK BAR HERE
+            console.log('Deleted Successfully')
+            this.onToggleDelete(null)
+          }
+          
+        } catch (error) {
+          // SNACK BAR HERE
+          console.log(error)
+        } finally {
+          this.isLoading = false
+          this.fetchList()
+        }
+      },
+
+      onToggleDelete(item){
+        this.holdSelectedData = item
+        this.isDeleteOpen = !this.isDeleteOpen
+      },
+
       onTogglePdfViewer() {
         this.showPDFViewer = !this.showPDFViewer;
       },
