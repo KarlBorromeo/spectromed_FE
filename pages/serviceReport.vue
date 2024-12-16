@@ -130,7 +130,7 @@
             <v-radio-group v-model="formData.serviceType" class="marginPaddingY0" label="Service Type">
               <v-radio
                 v-for="(type,i) in serviceTypeItems"
-                :key="type"
+                :key="i"
                 :label="type"
                 :value="type"
               />
@@ -186,7 +186,7 @@
             <v-radio-group v-model="formData.recommendChoice" class="marginPaddingY0">
               <v-radio
                 v-for="(type,i) in statusItems"
-                :key="type"
+                :key="i"
                 :label="type"
                 :value="type"
               />
@@ -232,6 +232,9 @@
                     </th>
                     <th class="text-center table-header white--text subtitle-2">
                       Remarks
+                    </th>
+                    <th class="text-center table-header white--text subtitle-2">
+                      Action
                     </th>
                   </tr>
                 </thead>
@@ -282,6 +285,11 @@
                         rows="1"
                         dense
                       />
+                    </td>
+                    <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
+                      <v-btn icon @click="removePartsReplaced(i)">
+                        <v-icon class="red--text">mdi-minus</v-icon>
+                      </v-btn>
                     </td>
                   </tr>
                 </tbody>
@@ -428,7 +436,11 @@ export default {
       }
     },
     methods: {
+      // increment the parts replaced array
       incrementPartReplaced(){
+        if(this.formData.partsReplaced.length>=5){
+          return;
+        }
         this.formData.partsReplaced.push(
           {
             quantity: null,
@@ -437,6 +449,10 @@ export default {
             remarks: ''
           }
         )
+      },
+      // remove an index in parts replaced array 
+      removePartsReplaced(index){
+        this.formData.partsReplaced.splice(index,1)
       },
       //TODO: consider the automation
       onSubmit(){
