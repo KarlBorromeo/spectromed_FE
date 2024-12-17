@@ -26,7 +26,6 @@
               label="Date"
               filled
               dense
-              :disabled="isLoading"
             />
             <!-- SR No. -->
             <v-text-field
@@ -34,7 +33,6 @@
               class="marginPaddingY0"
               type="text"
               label="S.R No.:"
-              :disabled="isLoading"
               filled
               dense
             />
@@ -56,7 +54,6 @@
               class="marginPaddingY0"
               type="text"
               label="Customer Name"
-              :disabled="isLoading"
             />
             <!-- BUSINESS NAME -->
             <v-text-field
@@ -67,7 +64,6 @@
               class="marginPaddingY0"
               type="text"
               label="Business Name"
-              :disabled="isLoading"
             />
             <!-- ADDRESS -->
             <v-text-field
@@ -78,7 +74,6 @@
               class="marginPaddingY0"
               type="text"
               label="Address"
-              :disabled="isLoading"
             />
             <!-- Mobile Number -->
             <v-text-field
@@ -91,7 +86,6 @@
               hide-spin-buttons
               label="Mobile Number"
               prefix="+63"
-              :disabled="isLoading"
             />
             <!-- Telephone Number -->
             <v-text-field
@@ -102,7 +96,6 @@
               class="marginPaddingY0"
               type="text"
               label="Telephone Number"
-              :disabled="isLoading"
             />
           </v-col>
           <v-col cols="12">
@@ -122,7 +115,6 @@
               class="marginPaddingY0"
               type="text"
               label="System Type"
-              :disabled="isLoading"
             />
             <!-- SERIAL NUMBER -->
             <v-text-field
@@ -133,7 +125,6 @@
               class="marginPaddingY0"
               type="text"
               label="Serial Number"
-              :disabled="isLoading"
             />
             <!-- SERVICE TYPE -->
             <v-radio-group v-model="formData.serviceType" class="marginPaddingY0" label="Service Type">
@@ -152,7 +143,6 @@
                 class="marginPaddingY0"
                 type="text"
                 label="Others"
-                :disabled="isLoading"
               />
             </v-radio-group>
           </v-col>
@@ -171,7 +161,6 @@
               auto-grow
               rows="2"
               filled
-              :disabled="isLoading"
             />
             <!-- Service Rendered -->
             <v-textarea
@@ -182,7 +171,6 @@
               auto-grow
               filled
               rows="4"
-              :disabled="isLoading"
             />
             <!-- RECOMMENDATIONS -->
             <v-textarea
@@ -193,7 +181,6 @@
               auto-grow
               filled
               rows="2"
-              :disabled="isLoading"
             />
             <!-- STATUS CHOICE -->
             <v-radio-group v-model="formData.recommendChoice" class="marginPaddingY0">
@@ -208,11 +195,10 @@
                 v-if="formData.recommendChoice === 'Others'"
                 filled
                 counter
-                maxlength="30"
+                maxlength="15"
                 class="marginPaddingY0"
                 type="text"
                 label="Others"
-                :disabled="isLoading"
               />
             </v-radio-group>
           </v-col>
@@ -265,7 +251,6 @@
                         type="number"
                         hide-spin-buttons
                         dense
-                        :disabled="isLoading"
                       />
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
@@ -277,7 +262,6 @@
                         filled
                         rows="1"
                         dense
-                        :disabled="isLoading"
                       />
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
@@ -289,7 +273,6 @@
                         filled
                         rows="1"
                         dense
-                        :disabled="isLoading"
                       />
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
@@ -301,7 +284,6 @@
                         filled
                         rows="1"
                         dense
-                        :disabled="isLoading"
                       />
                     </td>
                     <td class="cellBorderBottom py-1" style="border-right: 1px solid #4B6472!important">
@@ -324,7 +306,6 @@
                 class="marginPaddingY0 mx-4"
                 label="Travel Time"
                 type="time"
-                :disabled="isLoading"
               />
               <!-- ARRIVAL TIME -->
               <v-text-field
@@ -332,7 +313,6 @@
                 class="marginPaddingY0 mx-4"
                 label="Arrival Time"
                 type="time"
-                :disabled="isLoading"
               />
               <!-- DEPARTURE TIME -->
               <v-text-field
@@ -340,7 +320,6 @@
                 class="marginPaddingY0 mx-4"
                 label="Departure Time"
                 type="time"
-                :disabled="isLoading"
               />              
             </section>
           </v-col>
@@ -360,7 +339,6 @@
                 type="time"
                 width="200"
                 filled
-                :disabled="isLoading"
               />              
               <v-text-field
                 v-model="formData.endTime"
@@ -369,7 +347,6 @@
                 type="time"
                 width="200"
                 filled
-                :disabled="isLoading"
               /> 
             </section>
             <h3 class="mt-4 text-uppercase text-center">Acknowledgement</h3>
@@ -380,8 +357,7 @@
               class=""
               type="date"
               label="Date"
-              filled
-              :disabled="isLoading"
+              dense
             />
             <!-- CUSTOMER NAME AND SIGNATURE -->
             <p class="text-center overline marginPaddingY0">Customer Name & Signature</p>   
@@ -404,13 +380,7 @@
           <v-col cols="10" class="mt-4">
             <h2 class="text-center">"Service You Can Trust"</h2>
             <section class="d-flex justify-center">
-              <v-btn 
-                class="white--text btnBG caption"
-                :disabled="isLoading"
-                :loading="isLoading" 
-                @click="onSubmit">
-                Submit
-              </v-btn>
+              <v-btn class="white--text btnBG caption" @click="onSubmit">Submit</v-btn>
             </section>
           </v-col>
         </v-row>    
@@ -422,13 +392,23 @@
 <script>
 import Signature from '@lemonadejs/signature/dist/vue';
 export default {
-    name: 'ServiceReport',
+    // no update the this.formData if session data is undefined
+    beforeMount(){
+      const formData = JSON.parse(sessionStorage.getItem('formData'));
+      if(formData){     
+        this.formData = formData  
+      }
+    },
+    // remove the session data before leaving this page
+    beforeRouteLeave(to, from, next) {
+      sessionStorage.removeItem('formData');  
+      next();
+    },
+    name: 'serviceReport',
     components: { Signature },
     layout: 'form',
-
     data(){
       return{
-        isLoading: false,
         serviceTypeItems: [
           'Repair',
           'PM(Warrantly)',
@@ -511,41 +491,8 @@ export default {
         this.formData.customerSigName = obj.name
       },
       //TODO: consider the automation
-      async onSubmit(){
+      onSubmit(){
         console.log(this.formData);
-        if(this.isLoading){
-          return
-        }
-
-        try {
-          this.isLoading = true
-
-          const today = new Date();
-          const formattedDate = `${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}/${today.getFullYear()}`;
-
-          const finalData = {
-            userId: this.$auth.user.id,
-            category: 'service-report',
-            filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${formattedDate}`,
-            formData: {
-              ...this.formData,
-              serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
-              recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
-            }
-          }
-
-          const { data } = await this.$axios.post('/api/forms-lists',{ data: finalData })
-
-          if(data){
-            // SNACKBAR HERE FOR SUCCESS INPUT
-            this.$router.push('/reports')
-          }
-        } catch (error) {
-          // SNACKBAR HERE
-          console.error(error)
-        } finally {
-          this.isLoading = false
-        }
       }
     }
 }

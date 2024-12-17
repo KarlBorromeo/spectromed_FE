@@ -51,7 +51,7 @@
                         mdi-download
                     </v-icon>          
                 </v-btn>
-                <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="openUpdateForm(item)">
                     udpate
                     <v-icon small class="blue--text">
                         mdi-text-box-edit
@@ -194,7 +194,7 @@ import globalMixin from '@/mixins/global';
                 this.pagination.limit;
           
           const { data } = await this.$axios.get(`/api/forms-list/user/forms/${this.$auth.user.id}?search=${search}&limit=${limit}&offset=${offset}`)
-          
+          console.log(data)
           this.files = data?.data || []
           this.totalRecords = data?.total || 0
         } catch (error) {
@@ -221,7 +221,6 @@ import globalMixin from '@/mixins/global';
             this.isLoading = false
         }
       },
-
       async onDownload(item){
         if(this.isLoading){
           return
@@ -243,7 +242,6 @@ import globalMixin from '@/mixins/global';
             this.isLoading = false
         }
       },
-
       async deleteForm(){
         if(this.isLoading){
           return
@@ -266,6 +264,14 @@ import globalMixin from '@/mixins/global';
           this.isLoading = false
           this.fetchList()
         }
+      },
+      async openUpdateForm(item){
+        // save session data
+        sessionStorage.setItem('formData', JSON.stringify(item.formData));
+        // route to service report page
+        this.$router.push({
+          name: 'serviceReport'
+        });
       },
 
       onToggleDelete(item){
