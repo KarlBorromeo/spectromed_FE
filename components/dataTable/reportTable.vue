@@ -57,7 +57,7 @@
                         mdi-text-box-edit
                     </v-icon>           
                 </v-btn>
-                <v-btn class="text-lowercase caption elevation-0 rounded-xxl">
+                <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="toggleShare(item)">
                     share
                     <v-icon small class="red--text"> 
                         mdi-share
@@ -126,6 +126,11 @@
           </v-alert>
       </template>
     </YesNoDialog>
+
+    <ReportTableFormsSharePdf
+      :open="showShareModal"
+      :values="holdSelectedData"
+      @close="toggleShare(null)"/>
   </v-card>
 </template>
 
@@ -159,6 +164,7 @@ import globalMixin from '@/mixins/global';
         pdf: null,
         holdSelectedData: null,
         isDeleteOpen:false,
+        showShareModal: false,
       }
     },
 
@@ -268,6 +274,7 @@ import globalMixin from '@/mixins/global';
       async openUpdateForm(item){
         // save session data
         sessionStorage.setItem('formData', JSON.stringify(item.formData));
+        sessionStorage.setItem('id', JSON.stringify(item.id));
         // route to service report page
         this.$router.push({
           name: 'serviceReport'
@@ -281,6 +288,11 @@ import globalMixin from '@/mixins/global';
 
       onTogglePdfViewer() {
         this.showPDFViewer = !this.showPDFViewer;
+      },
+
+      toggleShare(item){
+        this.holdSelectedData = item
+        this.showShareModal = !this.showShareModal
       },
     },
     async beforeMount(){

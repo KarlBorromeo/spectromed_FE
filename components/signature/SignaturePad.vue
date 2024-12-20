@@ -16,12 +16,6 @@
             Customer Name & Signature
           </v-card-title>
           <v-card-text>
-            <v-text-field
-              v-model="name"
-              class=""
-              type="text"
-              label="Customer Name"
-            />
             <v-card class="mx-4 elevation-2">
                 <Signature ref="signature" :value="[]" :width="400" :height="200" instructions="Sign here.."/> 
             </v-card>
@@ -55,26 +49,18 @@
     data () {
       return {
         dialog: false,
-        name: null,
       }
     },
     methods: {
         emitSave(){
             let obj = {
                 signature: this.$refs.signature.current.getImage(),
-                name: this.name
-            }
-            if(!this.name){
-                alert('name must not be null')
-                return;
             }
             this.$emit('save',obj)
             this.dialog = false
-            this.name = null;
         },
         cancel(){
             this.dialog = false;
-            this.name = null;
         }
     }
   }

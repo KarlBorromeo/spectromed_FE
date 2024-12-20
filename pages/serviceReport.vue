@@ -24,6 +24,7 @@
               class="marginPaddingY0"
               type="date"
               label="Date"
+              :disable="isLoading"
               filled
               dense
             />
@@ -33,6 +34,7 @@
               class="marginPaddingY0"
               type="text"
               label="S.R No.:"
+              :disable="isLoading"
               filled
               dense
             />
@@ -52,6 +54,7 @@
               counter
               maxlength="30"
               class="marginPaddingY0"
+              :disable="isLoading"
               type="text"
               label="Customer Name"
             />
@@ -61,6 +64,7 @@
               filled
               counter
               maxlength="50"
+              :disable="isLoading"
               class="marginPaddingY0"
               type="text"
               label="Business Name"
@@ -71,6 +75,7 @@
               counter
               maxlength="100"
               filled
+              :disable="isLoading"
               class="marginPaddingY0"
               type="text"
               label="Address"
@@ -81,6 +86,7 @@
               counter
               maxlength="10"
               filled
+              :disable="isLoading"
               class="marginPaddingY0"
               type="text"
               hide-spin-buttons
@@ -93,6 +99,7 @@
               counter
               maxlength="30"
               filled
+              :disable="isLoading"
               class="marginPaddingY0"
               type="text"
               label="Telephone Number"
@@ -113,6 +120,7 @@
               maxlength="100"
               filled
               class="marginPaddingY0"
+              :disable="isLoading"
               type="text"
               label="System Type"
             />
@@ -122,6 +130,7 @@
               counter
               maxlength="100"
               filled
+              :disable="isLoading"
               class="marginPaddingY0"
               type="text"
               label="Serial Number"
@@ -139,6 +148,7 @@
                 v-if="formData.serviceType === 'Others'"
                 counter
                 maxlength="10"
+                :disable="isLoading"
                 filled
                 class="marginPaddingY0"
                 type="text"
@@ -158,6 +168,7 @@
               label="Reason for Service"
               counter
               maxlength="180"
+              :disable="isLoading"
               auto-grow
               rows="2"
               filled
@@ -166,6 +177,7 @@
             <v-textarea
               v-model="formData.serviceRendered"
               counter
+              :disable="isLoading"
               maxlength="900"
               label="Service Rendered"
               auto-grow
@@ -176,6 +188,7 @@
             <v-textarea
               v-model="formData.recommendation"
               counter
+              :disable="isLoading"
               maxlength="180"
               label="Recommendation"
               auto-grow
@@ -195,6 +208,7 @@
                 v-if="formData.recommendChoice === 'Others'"
                 filled
                 counter
+                :disable="isLoading"
                 maxlength="15"
                 class="marginPaddingY0"
                 type="text"
@@ -249,6 +263,7 @@
                         filled
                         class="marginPaddingY0"
                         type="number"
+                        :disable="isLoading"
                         hide-spin-buttons
                         dense
                       />
@@ -258,6 +273,7 @@
                         v-model="item.partItem"
                         counter
                         maxlength="20"  
+                        :disable="isLoading"
                         auto-grow
                         filled
                         rows="1"
@@ -270,6 +286,7 @@
                         counter
                         maxlength="25"
                         auto-grow
+                        :disable="isLoading"
                         filled
                         rows="1"
                         dense
@@ -281,6 +298,7 @@
                         counter
                         maxlength="40"
                         auto-grow
+                        :disable="isLoading"
                         filled
                         rows="1"
                         dense
@@ -305,6 +323,7 @@
                 v-model="formData.travelTime"
                 class="marginPaddingY0 mx-4"
                 label="Travel Time"
+                :disable="isLoading"
                 type="time"
               />
               <!-- ARRIVAL TIME -->
@@ -312,6 +331,7 @@
                 v-model="formData.arrivalTime"
                 class="marginPaddingY0 mx-4"
                 label="Arrival Time"
+                :disable="isLoading"
                 type="time"
               />
               <!-- DEPARTURE TIME -->
@@ -319,6 +339,7 @@
                 v-model="formData.departureTime"
                 class="marginPaddingY0 mx-4"
                 label="Departure Time"
+                :disable="isLoading"
                 type="time"
               />              
             </section>
@@ -336,6 +357,7 @@
                 v-model="formData.startTime"
                 class="marginPaddingY0 mx-4"
                 label="Start Time"
+                :disable="isLoading"
                 type="time"
                 width="200"
                 filled
@@ -345,6 +367,7 @@
                 class="marginPaddingY0 mx-4"
                 label="End Time"
                 type="time"
+                :disable="isLoading"
                 width="200"
                 filled
               /> 
@@ -355,6 +378,7 @@
             <v-text-field
               v-model="formData.ackDate" 
               class=""
+              :disable="isLoading"
               type="date"
               label="Date"
               dense
@@ -366,13 +390,6 @@
                 <img :src="formData.customerSignatureImg" >
               </v-card>
             </div>
-            <v-text-field
-              v-model="formData.customerSigName"
-              class=""
-              type="text"
-              label="Name"
-              readonly
-            />
             <section class="d-flex flex-wrap justify-center">
               <SignaturePad ref="signaturePad" @save="saveSignatureName"/>              
             </section>
@@ -395,13 +412,28 @@ export default {
     // no update the this.formData if session data is undefined
     beforeMount(){
       const formData = JSON.parse(sessionStorage.getItem('formData'));
-      if(formData){     
-        this.formData = formData  
+      const id = JSON.parse(sessionStorage.getItem('id'));
+      if(formData){
+        this.mode = 'edit'
+        this.formData = formData
+        this.holdID = id
+
+        if(formData.serviceType !== null && !this.serviceTypeItems.includes(formData.serviceType)){
+          this.formData.serviceType = 'Others'
+          this.holdOtherstext = formData.serviceType
+        }
+
+        if(formData.recommendChoice !== null && !this.statusItems.includes(formData.recommendChoice)){
+          this.formData.recommendChoice = 'Others'
+          this.holdRecommendOtherstext = formData.recommendChoice
+        }
       }
+        console.log('FormData:',this.formData,this.holdID);
     },
     // remove the session data before leaving this page
     beforeRouteLeave(to, from, next) {
       sessionStorage.removeItem('formData');  
+      sessionStorage.removeItem('id');  
       next();
     },
     name: 'serviceReport',
@@ -460,9 +492,11 @@ export default {
           endTime: null,
           // 
           ackDate: null,
-          customerSigName: null,
           customerSignatureImg: null,
         },
+        isLoading: false,
+        mode: 'create',
+        holdID : null
       }
     },
     methods: {
@@ -488,11 +522,54 @@ export default {
       saveSignatureName(obj){
         console.log(obj)
         this.formData.customerSignatureImg  =  obj.signature
-        this.formData.customerSigName = obj.name
       },
       //TODO: consider the automation
-      onSubmit(){
-        console.log(this.formData);
+      async onSubmit(){
+        if(this.isLoading){
+          return
+        }
+
+        try {
+          this.isLoading = true
+
+          const today = new Date();
+          const formattedDate = `${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}/${today.getFullYear()}`;
+          const finalData = {
+            userId: this.$auth.user.id,
+            category: 'service-report',
+            filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${formattedDate}`,
+            formData: {
+              ...this.formData,
+              serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
+              recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
+            }
+          }
+
+          if(this.mode === 'create'){
+            await this.$axios.post('/api/forms-lists',{
+              data: finalData
+              })
+            this.$router.push('/reports')
+          }else{
+            await this.$axios.put(`/api/forms-lists/${this.holdID}`,{
+                data: {
+                  formData: {
+                    ...this.formData,
+                    serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
+                    recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
+                  }
+                }
+              })
+            this.$router.push('/reports')
+          }
+
+
+        } catch (error) {
+          // Snack Bar
+          console.error(error)
+        } finally {
+          this.isLoading = false
+        }
       }
     }
 }

@@ -26,6 +26,7 @@
                             v-model="formData.firstName"
                             hide-details
                             outlined
+                            :disabled="isLoading"
                             label="First Name"
                             dense
                             :rules="fieldRequired"/>
@@ -35,6 +36,7 @@
                             v-model="formData.lastName"
                             hide-details
                             outlined
+                            :disabled="isLoading"
                             label="Last Name"
                             dense
                             :rules="fieldRequired"/>
@@ -44,6 +46,7 @@
                             v-model="formData.employeeId"
                             hide-details
                             outlined
+                            :disabled="isLoading"
                             label="Employee ID"
                             dense
                             :rules="fieldRequired"/>
