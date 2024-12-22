@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
    name: 'ReportTableFormsSharePdf',
    props: {
@@ -90,13 +91,14 @@ export default {
         open(value){
             if(value){
                 if(this.values){
-                    this.formData.message = `A PDF attachment was sent to you by ${this.$auth.user.firstName + ' ' + this.$auth.user.lastName}`
+                    this.formData.message = `A PDF attachment was sent to you by ${this.fetchUserData.firstName + ' ' + this.fetchUserData.lastName}`
                 }
             }
         }
     },
 
     computed: {
+        ...mapGetters('user', ['fetchUserData']),
         dialog: {
             get() {
                 return this.open
@@ -141,11 +143,11 @@ export default {
                     )
 
                     if(data){
-                        // SNACK BAR TO SAY THAT THE SEND EMAIL IS A SUCCESS
+                        // TODO SNACK BAR TO SAY THAT THE SEND EMAIL IS A SUCCESS
                         this.close()
                     }
                 } catch (error) {
-                    // SNACK BAR ERROR HERE
+                    // TODO SNACK BAR ERROR HERE
                     console.error(error)
                 } finally {
                     this.isLoading = false

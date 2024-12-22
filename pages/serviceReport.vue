@@ -27,6 +27,7 @@
               :disable="isLoading"
               filled
               dense
+              :rules="fieldRequired"
             />
             <!-- SR No. -->
             <v-text-field
@@ -34,7 +35,7 @@
               class="marginPaddingY0"
               type="text"
               label="S.R No.:"
-              :disable="isLoading"
+              disabled
               filled
               dense
             />
@@ -136,7 +137,7 @@
               label="Serial Number"
             />
             <!-- SERVICE TYPE -->
-            <v-radio-group v-model="formData.serviceType" class="marginPaddingY0" label="Service Type">
+            <v-radio-group v-model="formData.serviceType" class="marginPaddingY0" label="Service Type" :rules="fieldRequired">
               <v-radio
                 v-for="(type,i) in serviceTypeItems"
                 :key="i"
@@ -196,7 +197,7 @@
               rows="2"
             />
             <!-- STATUS CHOICE -->
-            <v-radio-group v-model="formData.recommendChoice" class="marginPaddingY0">
+            <v-radio-group v-model="formData.recommendChoice" class="marginPaddingY0" :rules="fieldRequired">
               <v-radio
                 v-for="(type,i) in statusItems"
                 :key="i"
@@ -321,26 +322,32 @@
               <!-- TRAVEL TIME -->
               <v-text-field
                 v-model="formData.travelTime"
-                class="marginPaddingY0 mx-4"
+                class="pb-6 mx-4"
                 label="Travel Time"
                 :disable="isLoading"
                 type="time"
+                :rules="fieldRequired"
+                hide-details
               />
               <!-- ARRIVAL TIME -->
               <v-text-field
                 v-model="formData.arrivalTime"
-                class="marginPaddingY0 mx-4"
+                class="pb-6 mx-4"
                 label="Arrival Time"
                 :disable="isLoading"
                 type="time"
+                :rules="fieldRequired"
+                hide-details
               />
               <!-- DEPARTURE TIME -->
               <v-text-field
                 v-model="formData.departureTime"
-                class="marginPaddingY0 mx-4"
+                class="pb-6 mx-4"
                 label="Departure Time"
                 :disable="isLoading"
                 type="time"
+                :rules="fieldRequired"
+                hide-details
               />              
             </section>
           </v-col>
@@ -361,6 +368,7 @@
                 type="time"
                 width="200"
                 filled
+                :rules="fieldRequired"
               />              
               <v-text-field
                 v-model="formData.endTime"
@@ -370,19 +378,12 @@
                 :disable="isLoading"
                 width="200"
                 filled
+                :rules="fieldRequired"
               /> 
             </section>
             <h3 class="mt-4 text-uppercase text-center">Acknowledgement</h3>
             <p class="text-center caption">We confirm that the above spare parts have been replaced / machine has been repaired to our satisfaction
               Spare parts ordered were received in good physical condition</p>
-            <v-text-field
-              v-model="formData.ackDate" 
-              class=""
-              :disable="isLoading"
-              type="date"
-              label="Date"
-              dense
-            />
             <!-- CUSTOMER NAME AND SIGNATURE -->
             <p class="text-center overline marginPaddingY0">Customer Name & Signature</p>   
             <div class="d-flex justify-center align-center flex-column mb-2">
@@ -390,6 +391,13 @@
                 <img :src="formData.customerSignatureImg" >
               </v-card>
             </div>
+            <v-text-field
+              v-model="formData.customerSigName"
+              class=""
+              type="text"
+              label="Name"
+              readonly
+            />
             <section class="d-flex flex-wrap justify-center">
               <SignaturePad ref="signaturePad" @save="saveSignatureName"/>              
             </section>
@@ -408,6 +416,8 @@
 
 <script>
 import Signature from '@lemonadejs/signature/dist/vue';
+import moment from 'moment';
+import { mapGetters, mapActions } from 'vuex'
 export default {
     // no update the this.formData if session data is undefined
     beforeMount(){
@@ -427,11 +437,34 @@ export default {
           this.formData.recommendChoice = 'Others'
           this.holdRecommendOtherstext = formData.recommendChoice
         }
+      }else if(this.mode === 'create'){
+        // AUTO GENERATE THE SR NUMBER
+        const formatToThreeDigits = (number) => {
+          return number.toString().padStart(3, '0');
+        };
+        this.holdSrDate = this.todayPhDate()
+        this.holdCount =  (this.fetchUserData.count !== null && this.fetchUserData.count !== undefined) ? (this.fetchUserData.count + 1) : 0
+
+        if(this.fetchUserData.srDate){
+          
+          const holdMonth = this.holdSrDate.split('/')[0];
+          const fetchMonth = this.fetchUserData.srDate.split('/')[0];
+          if (holdMonth !== fetchMonth) {
+            this.holdCount = 0; // Reset the count if the month is today and the month of last input is not the same
+          }
+        }
+
+        this.formData.srNumber = (this.fetchUserData.firstName ? this.fetchUserData.firstName.charAt(0).toUpperCase() : '') +
+        (this.fetchUserData.lastName ? this.fetchUserData.lastName.charAt(0).toUpperCase() : '') +
+        (formatToThreeDigits(this.holdCount)) +
+        (this.holdSrDate.split('/')[0]) +
+        (this.holdSrDate.split('/')[2])
+        
       }
-        console.log('FormData:',this.formData,this.holdID);
     },
     // remove the session data before leaving this page
     beforeRouteLeave(to, from, next) {
+      this.$refs.form.resetValidation()
       sessionStorage.removeItem('formData');  
       sessionStorage.removeItem('id');  
       next();
@@ -493,13 +526,24 @@ export default {
           // 
           ackDate: null,
           customerSignatureImg: null,
+          customerSigName: null,
         },
         isLoading: false,
         mode: 'create',
-        holdID : null
+        holdID : null,
+        // For the auto generation of SR
+        holdCount: null,
+        holdSrDate: null,
+        // 
+        fieldRequired: [v => !!v || 'Field is required'],
       }
     },
+
+    computed:{
+      ...mapGetters('user', ['fetchUserData']),
+    },
     methods: {
+      ...mapActions('user',['updateSrDateAndCount']),
       // increment the parts replaced array
       incrementPartReplaced(){
         if(this.formData.partsReplaced.length>=5){
@@ -522,54 +566,78 @@ export default {
       saveSignatureName(obj){
         console.log(obj)
         this.formData.customerSignatureImg  =  obj.signature
+        this.formData.customerSigName = obj.name
       },
       //TODO: consider the automation
       async onSubmit(){
         if(this.isLoading){
           return
         }
-
-        try {
-          this.isLoading = true
-
-          const today = new Date();
-          const formattedDate = `${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}/${today.getFullYear()}`;
-          const finalData = {
-            userId: this.$auth.user.id,
-            category: 'service-report',
-            filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${formattedDate}`,
-            formData: {
-              ...this.formData,
-              serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
-              recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
+        if(this.$refs.form.validate()){
+          try {
+            this.isLoading = true
+  
+            const today = this.todayPhDate();
+            // const formattedDate = `${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}/${today.getFullYear()}`;
+            const finalData = {
+              userId: this.$auth.user.id,
+              category: 'service-report',
+              filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${today}`,
+              formData: {
+                ...this.formData,
+                serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
+                recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
+              }
             }
-          }
-
-          if(this.mode === 'create'){
-            await this.$axios.post('/api/forms-lists',{
-              data: finalData
+  
+            if(this.mode === 'create'){
+              // Save Offline
+              this.updateSrDateAndCount({
+                srDate: this.holdSrDate,
+                count: this.holdCount,
               })
-            this.$router.push('/reports')
-          }else{
-            await this.$axios.put(`/api/forms-lists/${this.holdID}`,{
-                data: {
-                  formData: {
-                    ...this.formData,
-                    serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
-                    recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
+              // FIRT AWAIT IS SAVE ONLINE (SR VALUES)
+              await Promise.all([
+  
+                this.$axios.put(`/api/users/${this.fetchUserData.id}`, {
+                  srDate: this.holdSrDate,
+                  count: this.holdCount,
+                }),
+  
+                this.$axios.post('/api/forms-lists', {
+                  data: finalData,
+                }),
+  
+              ]);
+              this.$router.push('/reports')
+            }else{
+              await this.$axios.put(`/api/forms-lists/${this.holdID}`,{
+                  data: {
+                    formData: {
+                      ...this.formData,
+                      serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
+                      recommendChoice: this.formData.recommendChoice === 'Others' ? this.holdRecommendOtherstext: this.formData.recommendChoice,
+                    }
                   }
-                }
-              })
-            this.$router.push('/reports')
+                })
+              this.$router.push('/reports')
+            }
+  
+  
+          } catch (error) {
+            // TODO Snack Bar
+            console.error(error)
+          } finally {
+            this.isLoading = false
           }
-
-
-        } catch (error) {
-          // Snack Bar
-          console.error(error)
-        } finally {
-          this.isLoading = false
+        }else{
+          // TODO SNACKBAR TO TELL THE USER TO CHECK FOR REQUIRED FIELDS
+          console.error('Please check the required fields')
         }
+      },
+
+      todayPhDate(){
+        return moment().utcOffset(8).format('MM/DD/YY')
       }
     }
 }

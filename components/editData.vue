@@ -201,7 +201,7 @@ export default {
 
             // Checks if the image uploaded is really an image
             if(imageFile.type.split('/')[0] !== 'image'){
-                // PUT THE SNACKBAR ERROR HERE
+                // TODO PUT THE SNACKBAR ERROR HERE
                 console.error('Image only (.png, .jpeg, .webp)')
                 return
             }
@@ -242,7 +242,7 @@ export default {
                     'api/upload/files/' + this.formData.signature.id,
                     )
             } catch (error) {
-                // SNACK BAR ERROR HERE
+                // TODO SNACK BAR ERROR HERE
                 console.error(error)
             } finally {
                 this.isLoading = false
@@ -257,7 +257,7 @@ export default {
             }
 
             if(this.formData.signature === null){
-                // Snack Bar HERE
+                // TODO Snack Bar HERE
                 console.error('Signature Field is required')
 
                 return
@@ -272,7 +272,7 @@ export default {
                     )
 
                     if(data){
-                        // Snackbar HERE
+                        // TODO Snackbar HERE
                         console.log('Successfully updated data');
                         this.updateUser(this.formData)
                         this.close()

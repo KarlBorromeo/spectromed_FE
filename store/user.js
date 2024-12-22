@@ -37,6 +37,11 @@ export const state = () => ({
         state.userData.firstName = data.firstName
         state.userData.lastName = data.lastName
         state.userData.employeeId = data.employeeId
+    },
+
+    changeSrValues(state,data){
+        state.userData.srDate = data.srDate
+        state.userData.count = data.count
     }
   }
   
@@ -59,6 +64,10 @@ export const state = () => ({
 
     updateUser({ commit }, data){
         commit('changeUserData', data)
+    },
+
+    updateSrDateAndCount({ commit }, data){
+        commit('changeSrValues', data)
     },
     
     updateUserMe(_,payload){

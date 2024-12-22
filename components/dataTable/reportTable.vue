@@ -258,13 +258,13 @@ import globalMixin from '@/mixins/global';
           const { data } = await this.$axios.delete(`/api/forms-lists/${this.holdSelectedData.id}`)
 
           if(data){
-            // SNACK BAR HERE
+            // TODO SNACK BAR HERE
             console.log('Deleted Successfully')
             this.onToggleDelete(null)
           }
           
         } catch (error) {
-          // SNACK BAR HERE
+          // TODO SNACK BAR HERE
           console.log(error)
         } finally {
           this.isLoading = false
