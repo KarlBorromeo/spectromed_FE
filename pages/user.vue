@@ -27,7 +27,7 @@
                             indeterminate
                             color="primary" />
                         <v-sheet v-else class="ma-0 pa-0" color="transparent">
-                         <v-sheet v-if="userData.signature" class="ma-0 pa-0" color="transparent" outlined>
+                         <v-sheet v-if="(userData ? userData.signature : false)" class="ma-0 pa-0" color="transparent" outlined>
                             <span>Signature: </span>
                             <img
                                 height="150px"
@@ -71,7 +71,7 @@ export default {
     }),
 
     mounted() {
-        console.log('HERE IN PROFILE');
+        // console.log('HERE IN PROFILE');
         this.fetctUserData()
     },
     
