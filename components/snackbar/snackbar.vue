@@ -8,14 +8,13 @@
       </v-btn> -->
       <v-snackbar
         v-model="snackbar"
-        :color="color?color:'primary darken-1'"
-        dark
+        :color="color?color + ' darken-1':'primary lighten-1'"
       >
         {{ text }}
   
         <template v-slot:action="{ attrs }">
           <v-btn
-            color="black"
+            color="white"
             text
             class="caption"
             v-bind="attrs"

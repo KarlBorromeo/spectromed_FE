@@ -59,6 +59,7 @@
         <EditData
         :open="isEditDataOpen"
         @close="toggleEditData"/>
+        <Snackbar ref="snackbar" :text="snackbarText" :color="snackbarColor"/>
     </v-row>
 </template>
 <script>
@@ -66,6 +67,8 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
     name: 'Profile',
     data: () => ({
+        snackbarText: '',
+        snackbarColor: '',
         isLoading: false,
         isEditDataOpen: false,
     }),
@@ -97,8 +100,9 @@ export default {
                     this.copyUser(data)
                 }
             } catch (error) {
-                // TODO SNACK BAR ERROR
-                console.error(error)
+                this.snackbarText = 'Something went wrong'
+                this.snackbarColor = 'red'
+                this.$refs.snackbar.snackbar = true;
             } finally {
                 this.isLoading = false
             }

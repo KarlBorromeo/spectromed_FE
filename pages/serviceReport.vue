@@ -411,6 +411,7 @@
         </v-row>    
       </v-container>
     </v-form>    
+    <Snackbar ref="snackbar" :text="snackbarText" :color="snackbarColor"/>
   </v-container>
 </template>
 
@@ -474,6 +475,8 @@ export default {
     layout: 'form',
     data(){
       return{
+        snackbarText: '',
+        snackbarColor: '',
         serviceTypeItems: [
           'Repair',
           'PM(Warrantly)',
@@ -568,7 +571,6 @@ export default {
         this.formData.customerSignatureImg  =  obj.signature
         this.formData.customerSigName = obj.name
       },
-      //TODO: consider the automation
       async onSubmit(){
         if(this.isLoading){
           return
@@ -613,6 +615,8 @@ export default {
             }else{
               await this.$axios.put(`/api/forms-lists/${this.holdID}`,{
                   data: {
+                    category: 'service-report',
+                    filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${today}`,
                     formData: {
                       ...this.formData,
                       serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
@@ -625,14 +629,16 @@ export default {
   
   
           } catch (error) {
-            // TODO Snack Bar
-            console.error(error)
+            this.snackbarText = 'Something went wrong.'
+            this.snackbarColor = 'red'
+            this.$refs.snackbar.snackbar = true;
           } finally {
             this.isLoading = false
           }
         }else{
-          // TODO SNACKBAR TO TELL THE USER TO CHECK FOR REQUIRED FIELDS
-          console.error('Please check the required fields')
+          this.snackbarText = 'Please check the required fields'
+          this.snackbarColor = 'red'
+          this.$refs.snackbar.snackbar = true;
         }
       },
 

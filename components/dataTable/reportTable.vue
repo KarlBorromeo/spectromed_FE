@@ -131,6 +131,8 @@
       :open="showShareModal"
       :values="holdSelectedData"
       @close="toggleShare(null)"/>
+
+    <Snackbar ref="snackbar" :text="snackbarText" :color="snackbarColor"/>
   </v-card>
 </template>
 
@@ -140,6 +142,8 @@ import globalMixin from '@/mixins/global';
     mixins: [globalMixin],
     data () {
       return {
+        snackbarText : '',
+        snackbarColor : '',
         search: '',
         headers: [
           {
@@ -237,7 +241,6 @@ import globalMixin from '@/mixins/global';
             
             const {data} = await this.$axios.get(`/api/forms-list/${item.category}/${item.id}`)
             const downloadLink = document.createElement('a');
-            // Todo after data
             // this.pdf = data;
             downloadLink.href = data;
             downloadLink.download = `${item.filename}`
@@ -258,14 +261,16 @@ import globalMixin from '@/mixins/global';
           const { data } = await this.$axios.delete(`/api/forms-lists/${this.holdSelectedData.id}`)
 
           if(data){
-            // TODO SNACK BAR HERE
-            console.log('Deleted Successfully')
+            this.snackbarText = 'Deleted Successfully'
+            this.snackbarColor = 'green'
+            this.$refs.snackbar.snackbar = true;
             this.onToggleDelete(null)
           }
           
         } catch (error) {
-          // TODO SNACK BAR HERE
-          console.log(error)
+          this.snackbarText = 'Something went wrong'
+          this.snackbarColor = 'red'
+          this.$refs.snackbar.snackbar = true;
         } finally {
           this.isLoading = false
           this.fetchList()

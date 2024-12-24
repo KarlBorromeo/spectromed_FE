@@ -55,6 +55,7 @@
                     Submit
                 </v-btn>
             </v-card-actions>
+            <Snackbar ref="snackbar" :text="snackbarText" :color="snackbarColor"/>
         </v-card>
     </v-dialog>
 </template>
@@ -75,6 +76,8 @@ export default {
    },
 
    data: () => ({
+        snackbarText: '',
+        snackbarColor: '',
         isLoading: false,
         fieldRequired: [v => !!v || 'Field is required'],
         emailRule: [
@@ -143,12 +146,16 @@ export default {
                     )
 
                     if(data){
-                        // TODO SNACK BAR TO SAY THAT THE SEND EMAIL IS A SUCCESS
+                        this.snackbarText = 'Email sent!'
+                        this.snackbarColor = 'green'
+                        this.$refs.snackbar.snackbar = true;
+                        await new Promise(resolve => setTimeout(resolve,400))
                         this.close()
                     }
                 } catch (error) {
-                    // TODO SNACK BAR ERROR HERE
-                    console.error(error)
+                    this.snackbarText = 'Something went wrong'
+                    this.snackbarColor = 'red'
+                    this.$refs.snackbar.snackbar = true;
                 } finally {
                     this.isLoading = false
                 }

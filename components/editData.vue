@@ -118,10 +118,11 @@
                 <v-btn :disabled="isLoading" class="error" @click="close" small>
                     Cancel
                 </v-btn>
-                <v-btn :disabled="isLoading" class="primary" @click="onSubmit()" small>
+                <v-btn :disabled="isLoading" class="primary" @click="onSubmit" small>
                     Submit
                 </v-btn>
             </v-card-actions>
+            <Snackbar ref="snackbar" :text="snackbarText" :color="snackbarColor"/>
         </v-card>
     </v-dialog>
 </template>
@@ -146,6 +147,8 @@ export default {
             employeeId: null,
             signature: null,
         },
+        snackbarText: '',
+        snackbarColor: '',
     }),
 
     watch: {
@@ -186,8 +189,10 @@ export default {
                 signature: null,
             },
 
+            this.snackbarColor = ''
+            this.snackbarText = ''
             this.$refs.form.resetValidation()
-
+            
             this.$emit('close')
         },
 
@@ -201,8 +206,9 @@ export default {
 
             // Checks if the image uploaded is really an image
             if(imageFile.type.split('/')[0] !== 'image'){
-                // TODO PUT THE SNACKBAR ERROR HERE
-                console.error('Image only (.png, .jpeg, .webp)')
+                this.snackbarText = 'Image only (.png, .jpeg, .webp)'
+                this.snackbarColor = 'red'
+                this.$refs.snackbar.snackbar = true;
                 return
             }
 
@@ -242,8 +248,9 @@ export default {
                     'api/upload/files/' + this.formData.signature.id,
                     )
             } catch (error) {
-                // TODO SNACK BAR ERROR HERE
-                console.error(error)
+                this.snackbarText = String(error)
+                this.snackbarColor = 'red'
+                this.$refs.snackbar.snackbar = true;
             } finally {
                 this.isLoading = false
                 this.formData.signature = null
@@ -252,14 +259,7 @@ export default {
         },
 
         async onSubmit(){
-            if(this.isLoading){
-                return
-            }
-
-            if(this.formData.signature === null){
-                // TODO Snack Bar HERE
-                console.error('Signature Field is required')
-
+            if (this.isLoading) {
                 return
             }
 
@@ -272,17 +272,21 @@ export default {
                     )
 
                     if(data){
-                        // TODO Snackbar HERE
-                        console.log('Successfully updated data');
+                        // console.log('Successfully updated data');
                         this.updateUser(this.formData)
                         this.close()
                     }
                 } catch (error) {
-                    // SNACK BAR ERROR HERE
-                    console.error(error)
+                    this.snackbarText = 'Something went wrong'
+                    this.snackbarColor = 'red'
+                    this.$refs.snackbar.snackbar = true;
                 } finally {
                     this.isLoading = false
                 }
+            }else{
+                this.snackbarText = 'Required fields'
+                this.snackbarColor = 'red'
+                this.$refs.snackbar.snackbar = true;
             }
         },
     },
