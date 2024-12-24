@@ -1,92 +1,144 @@
 <template>
   <v-app dark>
+    <!-- Left Navigation -->
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
+      permanent
       app
+      id="drawer"
+      class=" ml-2 rounded-xxl"
     >
       <v-list>
+        <v-list-item class="d-flex ma-0 pa-0 align-center white--text flex-grow-0" :class="miniVariant==true?'justify-center':'justify-space-around'">
+            <div id="logoContainer" v-if="!miniVariant"/>
+            <p class="title ma-0 pa-0" v-if="!miniVariant">Spectromed</p>
+            <v-btn v-if="!miniVariant" icon @click.stop="miniVariant = !miniVariant" class="ma-0 pa-0">
+              <v-icon class="white--text">mdi-page-layout-sidebar-left</v-icon>
+            </v-btn>
+            
+            <v-btn icon v-if="miniVariant" @click.stop="miniVariant = false" class="pa-0 ma-0">
+              <v-icon class="white--text">mdi-page-layout-sidebar-left</v-icon>
+            </v-btn>
+        </v-list-item>
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
           :to="item.to"
           router
           exact
+          class="white--text subtitle-1"
         >
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon class="white--text">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <template v-slot:append>
+        <v-list>
+          <v-list-item @click="$router.push('/user')">
+            <v-list-item-action>
+              <v-icon class="white--text">mdi-account</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title class="white--text">My Account</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>         
+          <v-list-item @click="onLogout">
+            <v-list-item-action>
+              <v-icon class="white--text">mdi-logout</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title class="white--text">Logout</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>          
+        </v-list>
+      </template>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-    </v-app-bar>
-    <v-main>
+    <v-main id="contentMain" class="fill-height">
       <v-container>
         <Nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light> mdi-repeat </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+    <v-footer app>
+      <span>&copy; {{ new Date().getFullYear() }} Iron-Dev ♥</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'DefaultLayout',
+  middleware({ $auth, redirect, state}) {
+    if (!$auth.user) {
+      return redirect('/login')
+    } 
+    const rememberExpires = $auth.$storage.getCookie('remember_expires')
+    const rememberMaxage = $auth.$storage.getCookie('remember_maxage')
+    if (rememberExpires) {
+      $auth.options.cookie.options.expires = rememberExpires
+      $auth.options.cookie.options.maxAge = rememberMaxage
+    } else {
+      $auth.options.cookie.options.expires = null // reset to "session"
+      $auth.options.cookie.options.maxAge = null // reset to "session"
+    }
+  },
   data() {
     return {
       clipped: false,
       drawer: false,
       fixed: false,
       items: [
+        // {
+        //   icon: 'mdi-view-dashboard',
+        //   title: 'Dashboard',
+        //   to: '/',
+        // },
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/',
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
+          icon: 'mdi-history',
+          title: 'Report Files',
+          to: '/reports',
         },
       ],
       miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js',
     }
   },
+  methods: {
+    ...mapActions('user', ['removeUser',]),
+    onLogout(){
+      // Ensure gapi is loaded and the user is signed out
+      this.$auth.logout();
+      this.removeUser()
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
+<style scoped>
+#drawer{
+  background: rgb(63,30,106);
+  background: linear-gradient(0deg, rgba(63,30,106,1) 35%, rgba(95,39,168,1) 100%);
+}
+#logoContainer{
+  min-height: 80px;
+  min-width: 50px;
+  background-image: url('~@/assets/images/specMedLogo.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+#logo{
+  height: 100%;
+}
+#contentMain{
+  background-image: url('~@/assets/images/dashboardBG.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+</style>

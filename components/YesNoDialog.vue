@@ -1,0 +1,88 @@
+<template>
+  <v-dialog
+    v-model="dialog"
+    persistent
+    :retain-focus="false"
+    :max-width="width">
+    <v-card>
+      <v-card-title>
+        {{ title || 'Message' }}
+      </v-card-title>
+      <v-card-text>
+        <slot name="default"></slot>
+        {{ description }}
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="primary" text :loading="loading" @click="yes">
+          <v-icon v-if="positiveIcon" left>{{ positiveIcon }}</v-icon>
+          {{ positiveText }}
+        </v-btn>
+        <v-btn text :disabled="loading" @click="no">
+          <v-icon v-if="negativeIcon" left>{{ negativeIcon }}</v-icon>
+          {{ negativeText }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+export default {
+  name: 'YesNoDialog',
+  props: {
+    title: {
+      type: String,
+      default: null,
+    },
+    description: {
+      type: String,
+      default: null,
+    },
+    open: {
+      type: Boolean,
+    },
+    width: {
+      type: Number,
+      default: 400,
+    },
+    loading: Boolean,
+    positiveText: {
+      type: String,
+      default: 'Yes',
+    },
+    positiveIcon: {
+      type: String,
+      default: null,
+    },
+    negativeText: {
+      type: String,
+      default: 'No',
+    },
+    negativeIcon: {
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    dialog: {
+      get() {
+        return this.open;
+      },
+      set() {
+        this.$emit('close');
+      },
+    },
+  },
+  methods: {
+    yes() {
+      this.$emit('yes');
+    },
+    no() {
+      this.$emit('no');
+    },
+  },
+};
+</script>
+
+<style></style>
