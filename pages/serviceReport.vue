@@ -91,6 +91,7 @@
               class="marginPaddingY0"
               type="text"
               label="Customer Email"
+              :rules="emailRule"
             />
           </v-col>
           <v-col cols="12">
@@ -310,7 +311,7 @@
               class="mx-1"
               label="Travel Time"
               :disable="isLoading"
-              type="time"
+              type="text"
               :rules="fieldRequired"
               hide-details
             />
@@ -485,6 +486,15 @@ export default {
         ],
         holdOtherstext: '',
         holdRecommendOtherstext: '',
+        emailRule: [(v) => {
+          if(v){
+            if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){
+              return true;
+            }
+            return "Invalid email address"
+          }
+          return true;
+        }],
         formData: {
           date: null,
           srNumber: '',
