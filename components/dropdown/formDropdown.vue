@@ -8,9 +8,10 @@
             v-bind="attrs"
             v-on="on"
             class="rounded-xxl"
+            small
           >
             Generate Report
-            <v-icon id="cog" class="ml-2">mdi-cog</v-icon>
+            <v-icon small id="cog" class="ml-2">mdi-cog</v-icon>
           </v-btn>
         </template>
         <v-list>
@@ -36,11 +37,7 @@ export default {
       {
         title: 'Service Report',
         path: '/serviceReport'
-      },
-      {
-        title: 'Form 2',
-        path: null
-      },
+      }
     ],
   }),
 }

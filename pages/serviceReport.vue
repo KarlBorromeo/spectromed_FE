@@ -15,9 +15,9 @@
     </div>
 
     <v-form ref="form">
-      <v-container class="ma-4">
+      <v-container>
         <v-row justify="start" align="start">
-          <v-col cols="4" md="2">
+          <v-col cols="8" sm="3" lg="2">
             <!-- DATE -->
             <v-text-field
             v-model="formData.date"
@@ -44,10 +44,10 @@
             <p class="subtitle-1 marginPaddingY0">Customer's Information</p>
             <v-divider />
           </v-col>
-          <v-col cols="2" class="marginPaddingY0">
+          <v-col cols="12" sm="2" class="marginPaddingY0">
             <p class="subtitle-2">Account</p>
           </v-col>
-          <v-col cols="8" class="marginPaddingY0">
+          <v-col cols="12" sm="8" class="marginPaddingY0">
             <!-- CUSTOMER NAME -->
             <v-text-field
               v-model="formData.customerName"
@@ -110,10 +110,10 @@
             <p class="subtitle-1 marginPaddingY0">Technical Information</p>
             <v-divider />
           </v-col>
-          <v-col cols="2" class="marginPaddingY0">
+          <v-col cols="12" sm="2" class="marginPaddingY0">
             <p class="subtitle-2">Service</p>
           </v-col>
-          <v-col cols="8" class="marginPaddingY0">
+          <v-col cols="12" sm="8" class="marginPaddingY0">
             <!-- SYSTEM TYPE -->
             <v-text-field
               v-model="formData.systemType"
@@ -161,8 +161,8 @@
             <p class="subtitle-1 marginPaddingY0">Reasons</p>
             <v-divider />
           </v-col>
-          <v-col cols="2" class="marginPaddingY0" />
-          <v-col cols="8" class="marginPaddingY0">
+          <v-col cols="12" sm="2" class="marginPaddingY0" />
+          <v-col cols="12" sm="8" class="marginPaddingY0">
             <!-- REASON FOR SERVICE -->
             <v-textarea
               v-model="formData.reason"
@@ -221,8 +221,8 @@
           <v-col cols="12" class="marginPaddingY0">
             <section class=" mb-2 d-flex justify-space-between">
               <p class="subtitle-1 marginPaddingY0">Parts Replaced</p>
-              <v-btn class="mx-5 elevation-1 btnBG white--text rounded-lg caption" @click="incrementPartReplaced">Add Row
-                <v-icon>mdi-plus</v-icon>
+              <v-btn small class="mx-5 elevation-1 btnBG white--text rounded-lg caption" @click="incrementPartReplaced">Add Row
+                <v-icon small>mdi-plus</v-icon>
               </v-btn>
             </section>
             <v-divider />
@@ -236,16 +236,16 @@
               <template v-slot:default>
                 <thead style="background-color: red!important;">
                   <tr>
-                    <th class="text-center table-header white--text subtitle-2">
+                    <th class="text-center table-header white--text subtitle-2" style="min-width: 150px!important;">
                       Quantity
                     </th>
-                    <th class="text-center table-header white--text subtitle-2">
+                    <th class="text-center table-header white--text subtitle-2" style="min-width: 150px!important;">
                       Part Item
                     </th>
-                    <th class="text-center table-header white--text subtitle-2">
+                    <th class="text-center table-header white--text subtitle-2" style="min-width: 150px!important;">
                       P/N & S/N
                     </th>
-                    <th class="text-center table-header white--text subtitle-2">
+                    <th class="text-center table-header white--text subtitle-2" style="min-width: 150px!important;">
                       Remarks
                     </th>
                     <th class="text-center table-header white--text subtitle-2">
@@ -316,23 +316,26 @@
             </v-simple-table>
           </v-col>
           <v-col cols="12" />
+          <v-col cols="12" sm="3" class="mb-0 pb-0">
+            <!-- TRAVEL TIME -->
+            <v-text-field
+              v-model="formData.travelTime"
+              class="mx-1"
+              label="Travel Time"
+              :disable="isLoading"
+              type="time"
+              :rules="fieldRequired"
+              hide-details
+            />
+          </v-col>
+          <v-col cols="12" class="my-0 py-0"/>
           <!-- TIME data -->
-          <v-col cols="4" md="2">
+          <v-col cols="12" sm="3" class="mt-0 pt-1">
             <section class="d-flex flex-wrap">
-              <!-- TRAVEL TIME -->
-              <v-text-field
-                v-model="formData.travelTime"
-                class="pb-6 mx-4"
-                label="Travel Time"
-                :disable="isLoading"
-                type="time"
-                :rules="fieldRequired"
-                hide-details
-              />
               <!-- ARRIVAL TIME -->
               <v-text-field
                 v-model="formData.arrivalTime"
-                class="pb-6 mx-4"
+                class="mx-1"
                 label="Arrival Time"
                 :disable="isLoading"
                 type="time"
@@ -342,7 +345,7 @@
               <!-- DEPARTURE TIME -->
               <v-text-field
                 v-model="formData.departureTime"
-                class="pb-6 mx-4"
+                class="mx-1"
                 label="Departure Time"
                 :disable="isLoading"
                 type="time"
@@ -393,10 +396,11 @@
             </div>
             <v-text-field
               v-model="formData.customerSigName"
-              class=""
+              class="my-0 py-0"
               type="text"
               label="Name"
               readonly
+              disabled
             />
             <section class="d-flex flex-wrap justify-center">
               <SignaturePad ref="signaturePad" @save="saveSignatureName"/>              

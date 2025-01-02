@@ -17,12 +17,13 @@
           @keydown.enter="fetchList" />
           <!-- REFRESH Button -->
           <v-btn
-          color="primary"
-          outlined
           height="40"
           class="ml-2 mt-1"
-          @click="fetchList">
-              <v-icon>
+          @click="fetchList"
+          small
+          icon
+          >
+              <v-icon small>
                   mdi-refresh
               </v-icon>
           </v-btn>
@@ -38,7 +39,7 @@
       disable-pagination
       >
         <template v-slot:[`item.actions`]="{ item }">
-            <div class="d-flex justify-center text-capitalize" style="gap: 10px;">
+            <div class="d-none d-md-flex justify-center text-capitalize" style="gap: 10px;">
                 <v-btn class="text-lowercase caption elevation-0 rounded-xxl" @click="sampleView(item)">
                     view
                     <v-icon small class="black--text">
@@ -69,6 +70,57 @@
                         mdi-delete 
                     </v-icon>
                 </v-btn>
+            </div>
+            <div class="d-md-none d-block">
+              <v-menu 
+                transition="slide-y-transition"
+                bottom
+                left
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="black"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                    icon
+                  >
+                    <v-icon>mdi-cog-outline</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item class="text-lowercase caption elevation-0 rounded-xxl" @click="sampleView(item)">
+                      view
+                      <v-icon small class="black--text">
+                          mdi-eye
+                      </v-icon> 
+                  </v-list-item>
+                  <v-list-item class="text-lowercase caption elevation-0 rounded-xxl" @click="onDownload(item)">
+                      download pdf
+                      <v-icon small class="black--text">
+                          mdi-download
+                      </v-icon>          
+                  </v-list-item>
+                  <v-list-item class="text-lowercase caption elevation-0 rounded-xxl" @click="openUpdateForm(item)">
+                      udpate
+                      <v-icon small class="blue--text">
+                          mdi-text-box-edit
+                      </v-icon>           
+                  </v-list-item>
+                  <v-list-item class="text-lowercase caption elevation-0 rounded-xxl" @click="toggleShare(item)">
+                      share
+                      <v-icon small class="red--text"> 
+                          mdi-share
+                      </v-icon>
+                  </v-list-item>
+                  <v-list-item class="text-lowercase caption elevation-0 rounded-xxl" @click="onToggleDelete(item)">
+                      delete
+                      <v-icon small class="red--text"> 
+                          mdi-delete 
+                      </v-icon>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </div>
         </template>
       </v-data-table>

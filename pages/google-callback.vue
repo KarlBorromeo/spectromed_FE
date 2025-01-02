@@ -1,6 +1,14 @@
 <template>
   <div>
-    <p>Processing authentication...</p>
+    <p class="subtitle-1 white--text text-center">Processing authentication...</p>
+    <div class="d-flex justify-center">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="white"
+        indeterminate
+      ></v-progress-circular>      
+    </div>
   </div>
 </template>
 
@@ -8,7 +16,6 @@
 export default {
   layout: 'login',
   async mounted() {
-    // console.log(this.$auth.user);
     if(!this.$auth.user){
       const queryParams = this.$route.query;
   
@@ -17,7 +24,8 @@ export default {
           this.$router.push('/login');
           return;
         }
-  
+        
+        await new Promise(resolve => setTimeout(resolve,300))
         // Construct the Strapi callback URL manually
         let strapiCallbackUrl = `${process.env.API_URL}/api/auth/google/callback`;
   
@@ -38,9 +46,8 @@ export default {
         this.$auth.setUserToken(data.jwt, data.jwt);
   
         // Redirect after successful authentication
-          location.reload()
+        location.reload()
     }
-
   },
 };
 </script>

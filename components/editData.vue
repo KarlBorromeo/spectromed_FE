@@ -79,8 +79,8 @@
                             <v-sheet v-else class="ma-0 pa-0">
                                 <!-- Display -->
                                 <v-row class="ma-2">
-                                    <v-col cols="12" class="text-center ma-0 pa-0">
-                                        <v-sheet outlined class="ma-0 pa-0">
+                                    <v-col cols="12" class="text-center ma-0 pa-0 ">
+                                        <v-sheet outlined class="ma-0 pa-0 overflow-auto">
                                         <img
                                             height="150px"
                                             :src="`${

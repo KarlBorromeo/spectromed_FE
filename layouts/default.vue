@@ -4,15 +4,16 @@
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
-      permanent
       app
+      :permanent="$vuetify.breakpoint.width > 600"
+      :class="$vuetify.breakpoint.width > 600?'rounded-xl':''"
       id="drawer"
-      class=" ml-2 rounded-xxl"
+      class=" ml-2"
     >
       <v-list>
         <v-list-item class="d-flex ma-0 pa-0 align-center white--text flex-grow-0" :class="miniVariant==true?'justify-center':'justify-space-around'">
             <div id="logoContainer" v-if="!miniVariant"/>
-            <p class="title ma-0 pa-0" v-if="!miniVariant">Spectromed</p>
+            <p class="title ma-0 pa-0" v-if="!miniVariant">SpectruMed</p>
             <v-btn v-if="!miniVariant" icon @click.stop="miniVariant = !miniVariant" class="ma-0 pa-0">
               <v-icon class="white--text">mdi-page-layout-sidebar-left</v-icon>
             </v-btn>
@@ -115,7 +116,7 @@ export default {
       this.removeUser()
       this.$router.push('/login')
     }
-  }
+  },
 }
 </script>
 <style scoped>

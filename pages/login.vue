@@ -64,7 +64,7 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <Snackbar ref="snackbar" text="Not yet available, pls. use Gmail service"/>
+    <Snackbar ref="snackbar" color="red" text="Not yet available, pls. use Gmail service"/>
   </v-container>
 </template>
 

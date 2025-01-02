@@ -45,10 +45,13 @@
                     </v-col>
                     <v-col cols="12" class="text-right">
                         <v-btn 
-                            class="primary" 
+                            class="primary text-capitalize" 
                             :disabled="isLoading" 
                             :loading="isLoading"
-                            @click="toggleEditData">
+                            @click="toggleEditData"
+                            small
+                            :x-small="$vuetify.breakpoint.width < 600"
+                            >
                             Edit Data
                         </v-btn>
                     </v-col>

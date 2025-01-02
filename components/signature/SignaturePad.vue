@@ -2,8 +2,8 @@
     <section>
       <v-btn
         @click.stop="dialog = true"
-        small
-        class="text-decoration-underline"
+        x-small
+        class="text-decoration-underline text-capitalize"
       >
         Enter a Signature
       </v-btn>
