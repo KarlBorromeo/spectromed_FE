@@ -81,29 +81,16 @@
               type="text"
               label="Address"
             />
-            <!-- Mobile Number -->
+            <!-- Customer Email -->
             <v-text-field
-              v-model="formData.mobileNumber"
+              v-model="formData.customerEmail"
               counter
-              maxlength="10"
+              maxlength="40"
               filled
               :disable="isLoading"
               class="marginPaddingY0"
               type="text"
-              hide-spin-buttons
-              label="Mobile Number"
-              prefix="+63"
-            />
-            <!-- Telephone Number -->
-            <v-text-field
-              v-model="formData.telephoneNumber"
-              counter
-              maxlength="30"
-              filled
-              :disable="isLoading"
-              class="marginPaddingY0"
-              type="text"
-              label="Telephone Number"
+              label="Customer Email"
             />
           </v-col>
           <v-col cols="12">
@@ -504,8 +491,7 @@ export default {
           customerName: '',
           businessName: '',
           address: '',
-          mobileNumber: '',
-          telephoneNumber: '',
+          customerEmail: '',
           // 
           systemType: '',
           serialNumber: '',
@@ -588,7 +574,7 @@ export default {
             const finalData = {
               userId: this.$auth.user.id,
               category: 'service-report',
-              filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${today}`,
+              filename: `${this.formData.systemType} ${this.formData.serialNumber} ${this.formData.customerName} ${today}`,
               formData: {
                 ...this.formData,
                 serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,
@@ -620,7 +606,7 @@ export default {
               await this.$axios.put(`/api/forms-lists/${this.holdID}`,{
                   data: {
                     category: 'service-report',
-                    filename: `${this.formData.systemType}_${this.formData.serialNumber}_${this.formData.customerName} ${today}`,
+                    filename: `${this.formData.systemType} ${this.formData.serialNumber} ${this.formData.customerName} ${today}`,
                     formData: {
                       ...this.formData,
                       serviceType: this.formData.serviceType === 'Others' ? this.holdOtherstext : this.formData.serviceType ,

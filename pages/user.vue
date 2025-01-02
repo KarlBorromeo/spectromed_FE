@@ -27,8 +27,9 @@
                             indeterminate
                             color="primary" />
                         <v-sheet v-else class="ma-0 pa-0" color="transparent">
-                         <v-sheet v-if="(userData ? userData.signature : false)" class="ma-0 pa-0" color="transparent" outlined>
                             <span>Signature: </span>
+                         <v-sheet v-if="(userData ? userData.signature : false)" class="ma-0 pa-0 overflow-auto" color="transparent" outlined>
+                            
                             <img
                                 height="150px"
                                 :src="`${

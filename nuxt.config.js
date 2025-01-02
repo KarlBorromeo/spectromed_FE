@@ -4,7 +4,7 @@ export default {
   server: {
     //// use t he 0.0.0.0 in productions
     host: '0.0.0.0', // Listen on all interfaces for production
-    // host: 'localhost',// Listen to localhost only
+    // host: 'localhost',// Listen to localhost onlyq
     port: 3000, // You can change this if needed
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode

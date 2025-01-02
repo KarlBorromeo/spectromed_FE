@@ -127,8 +127,8 @@
       <v-divider />
       <!-- Pagination -->
       <v-sheet class="d-flex flex-wrap align-center pt-3 pl-sm-4 grey--text">
-          <v-sheet class="flex-grow-1">
-              Total: {{ totalRecords.toLocaleString() }}
+          <v-sheet class="flex-grow-1 caption">
+              Total: <strong>{{ totalRecords.toLocaleString() }}</strong>
           </v-sheet>
           <v-sheet class="d-flex align-center" width="80" style="margin-right: 16px;">
               <v-select
