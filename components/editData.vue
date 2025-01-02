@@ -52,7 +52,7 @@
                             :rules="fieldRequired"/>
                         </v-col>
                         <v-col cols="12" md="6" class="text-center">
-                            <v-sheet v-if="formData.signature === null" class="ma-0 pa-0">
+                            <v-sheet v-if="formData.signature === null" class="ma-0 pa-0 overflow-auto">
                                 <!------------------------------ ONLINE UPLOAD -------------------->
                                 <v-progress-circular
                                     v-if="isLoading"
