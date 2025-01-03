@@ -20,6 +20,8 @@
       :permanent="$vuetify.breakpoint.width > 600"
       id="drawer"
       class="overflow-auto"
+      style="max-height: 100vh!important;"
+      
     >
       <v-list>
         <v-list-item class="d-flex ma-0 pa-0 align-center white--text flex-grow-0" :class="miniVariant==true?'justify-center':'justify-space-around'">
@@ -75,7 +77,7 @@
         <Nuxt />
       </v-container>
     </v-main>
-    <v-footer app>
+    <v-footer>
       <span>&copy; {{ new Date().getFullYear() }} Iron-Dev ♥</span>
     </v-footer>
   </v-app>
