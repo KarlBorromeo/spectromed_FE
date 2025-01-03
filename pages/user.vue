@@ -1,12 +1,12 @@
 <template>
     <v-row no-gutters>
         <v-col cols="12">
-            <v-card class="ma-5" outlined>
-                <v-card-title class="align-center">
-                    Dashboard
-                </v-card-title>
-            </v-card>
-            <v-divider />
+            <div class="ma-0 pa-0 pt-5" style="background-color: transparent;" outlined>
+                <div class="pa-3">
+                    <h3 class="title">My Account</h3>
+                    <v-divider />
+                </div>
+            </div>
             <v-card-text>
                 <v-row>
                     <v-col cols="12" md="6">

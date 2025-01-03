@@ -3,8 +3,8 @@
     class="d-flex align-center justify-center"
     style="height: 100vh;"
   >
-    <v-row class="d-flex" align="center" justify="center">
-      <v-col cols="8" sm="5" md="4" lg="3" class="pa-0">
+    <v-row class="d-flex justify-center align-center">
+      <v-col cols="10" sm="5" md="4" lg="3" class="pa-0">
         <v-sheet
           elevation="3"
           class="pa-5 ma-0 text-center"
@@ -35,7 +35,7 @@
           >
             Login
           </v-btn>
-          <section class="d-flex align-center justify-space-between" width="100">
+          <section class="d-flex align-center justify-space-between">
             <section class="custom-divider" />
             <p class="subtitle-1 pa-0 my-0">or</p>
             <section class="custom-divider" />

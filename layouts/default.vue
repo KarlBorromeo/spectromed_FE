@@ -1,14 +1,25 @@
 <template>
   <v-app dark>
+    <!-- Header -->
+    <v-app-bar
+      color="deep-purple"
+      dark
+      v-if="$vuetify.breakpoint.width < 600"
+      max-height="60"
+    >
+      <v-app-bar-nav-icon @click="drawer = true">
+        <v-icon>mdi-page-layout-sidebar-left</v-icon>
+      </v-app-bar-nav-icon>
+      <v-toolbar-title>SpectruMed</v-toolbar-title>
+    </v-app-bar>
     <!-- Left Navigation -->
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
       app
       :permanent="$vuetify.breakpoint.width > 600"
-      :class="$vuetify.breakpoint.width > 600?'rounded-xl':''"
       id="drawer"
-      class=" ml-2"
+      class="overflow-auto"
     >
       <v-list>
         <v-list-item class="d-flex ma-0 pa-0 align-center white--text flex-grow-0" :class="miniVariant==true?'justify-center':'justify-space-around'">
@@ -37,17 +48,17 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list>
-      <template v-slot:append>
-        <v-list>
-          <v-list-item @click="$router.push('/user')">
+        <v-list-item @click="$router.push('/user')">
             <v-list-item-action>
               <v-icon class="white--text">mdi-account</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="white--text">My Account</v-list-item-title>
             </v-list-item-content>
-          </v-list-item>         
+          </v-list-item>
+      </v-list>
+      <template v-slot:append>
+        <v-list>      
           <v-list-item @click="onLogout">
             <v-list-item-action>
               <v-icon class="white--text">mdi-logout</v-icon>
@@ -59,8 +70,8 @@
         </v-list>
       </template>
     </v-navigation-drawer>
-    <v-main id="contentMain" class="fill-height">
-      <v-container>
+    <v-main id="contentMain">
+      <v-container class="py-0 my-0">
         <Nuxt />
       </v-container>
     </v-main>
