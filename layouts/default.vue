@@ -51,15 +51,23 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="$router.push('/user')">
-            <v-list-item-action>
-              <v-icon class="white--text">mdi-account</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title class="white--text">My Account</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <v-list-item-action>
+            <v-icon class="white--text">mdi-account</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title class="white--text">My Account</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item @click="onLogout">
+          <v-list-item-action>
+            <v-icon class="white--text">mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title class="white--text">Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>  
       </v-list>
-      <template v-slot:append>
+      <!-- <template v-slot:append>
         <v-list>      
           <v-list-item @click="onLogout">
             <v-list-item-action>
@@ -70,7 +78,7 @@
             </v-list-item-content>
           </v-list-item>          
         </v-list>
-      </template>
+      </template> -->
     </v-navigation-drawer>
     <v-main id="contentMain">
       <v-container class="py-0 my-0">
